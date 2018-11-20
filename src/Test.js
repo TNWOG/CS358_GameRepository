@@ -18,7 +18,6 @@ setInterval(function () {
     if(typeof request === "function")
     {
       request()
-      console.log("fart")
     }
   }
   
@@ -27,7 +26,6 @@ setInterval(function () {
 function gameQuery()
 {
   var GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
-  console.log("memes")
   query = titleText.value
   // send off the query
   requests.push(function() {
