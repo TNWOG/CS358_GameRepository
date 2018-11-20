@@ -1,6 +1,6 @@
 var apikey = ""
 var baseUrl = "http://www.giantbomb.com/api";
-var RATE_LIMIT_IN_MS = 10000;
+var RATE_LIMIT_IN_MS = 1000;
 var NUMBER_OF_REQUESTS_ALLOWED = 1;
 var NUMBER_OF_REQUESTS = 0;
 
