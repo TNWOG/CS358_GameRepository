@@ -1,4 +1,4 @@
-var apikey = ""
+var apikey = "e59e045968715255af4842819fc2ec5536ba32fc"
 var baseUrl = "http://www.giantbomb.com/api";
 var RATE_LIMIT_IN_MS = 1000;
 var NUMBER_OF_REQUESTS_ALLOWED = 1;
@@ -25,12 +25,21 @@ setInterval(function () {
 
 function gameQuery()
 {
+  var devSearch = $('#devCheck:checkbox:checked').length > 0;
   var GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
+  if (devSearch == 1) {
+    GamesSearchUrl = baseUrl + '/companies/?api_key=' + apikey + '&format=jsonp';
+  }
   query = titleText.value
+  var searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
+  if (devSearch == 1) {
+    searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
+  }
+  
   // send off the query
   requests.push(function() {
     $.ajax({
-      url: GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc',
+      url: searchUrl,
       type: "GET",
       dataType: "jsonp",
       crossDomain: true,
