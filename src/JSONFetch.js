@@ -1,4 +1,5 @@
 class JSONFetch{
+     
     constructor(divId){
         this.fileInput = document.createElement("input")
         this.fileInput.setAttribute('id', 'JSONFetch')

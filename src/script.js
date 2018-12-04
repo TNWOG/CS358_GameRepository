@@ -7,6 +7,8 @@ var NUMBER_OF_REQUESTS = 0;
 var title = document.getElementById("gameTitle");
 var image = document.getElementById("gameImage");
 
+var loadCirc = new LoadingGraphics()
+
 var singleTitle = document.getElementById("singleGameTitle");
 var arrayTitles = [];
 var arrayPics = [];
@@ -47,6 +49,9 @@ setInterval(function () {
 
 function gameQuery()
 {
+  title.innerHTML = "";
+  loadCirc.addTo("gameTitle")
+		
   var GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
   var query = titleText.value;
   // send off the query
@@ -65,6 +70,7 @@ function gameQuery()
 // callback for when we get back the results
 function searchCallback(data) 
 {
+	loadCirc.remove()
 	arrayTitles = [];
 	title.innerHTML = "";
 	if(data.number_of_page_results==0)
