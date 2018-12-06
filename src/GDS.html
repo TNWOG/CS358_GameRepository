@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>GameDatabaseSearch</title>
+	<script src="JSONFetch.js"></script>
+	<script src="LoadingGraphics.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<link type="text/css" rel="stylesheet" href="GDS.css" />
+  </head>
+  <body>
+    <div id="input">
+      <input type= "text" id= "gameTitleSearch" placeholder= "Search...">
+      <button type = "button" id= "titleSubmit" class= "pointer">Search</button>
+	</div>
+	
+	<p id = "emptySearchOutput"></p>
+
+	<!-- The Modal -->
+	<div id="myModal" class="modal">
+
+  	<!-- Modal content -->
+  		<div class="modal-content">
+    		<span class="close">&times;</span>
+    			<div id="singleGameTitle"></div>
+  		</div>
+
+	</div>
+    <div id="gameTitle"></div>
+    <script src="script.js"></script>
+  </body>
+</html>
