@@ -11,7 +11,6 @@ var loadCirc = new LoadingGraphics()
 
 var singleTitle = document.getElementById("singleGameTitle");
 var arrayTitles = [];
-var arrayPics = [];
 
 var titleText = document.getElementById("gameTitleSearch");
 var titleSubmit = document.getElementById("titleSubmit");
@@ -50,8 +49,7 @@ setInterval(function () {
 function gameQuery()
 {
   title.innerHTML = "";
-  loadCirc.addTo("gameTitle")
-		
+  loadCirc.addTo("gameTitle");
   var GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
   var query = titleText.value;
   // send off the query
@@ -70,8 +68,12 @@ function gameQuery()
 // callback for when we get back the results
 function searchCallback(data) 
 {
-	loadCirc.remove()
+	loadCirc.remove();
 	arrayTitles = [];
+	var arrayGame = [];
+	var platforms = "";
+	var platformsArray = [];
+	var zero = 0;
 	title.innerHTML = "";
 	if(data.number_of_page_results==0)
 	{
@@ -81,27 +83,43 @@ function searchCallback(data)
 	else
 	{
 		document.getElementById("emptySearchOutput").innerHTML="";
+		
+		var test = 0;
+		data.results.forEach(function(e){
+			platforms = "";
+			for(var k = 0; k < e.platforms.length; k++){
+				platforms += e.platforms[k].name + ", ";
+			}
+			platformsArray[test] = platforms;
+			test += 1;
+		});
+		
+		
+		
 		for(var i = 0; i <  data.results.length; i++)
 		{
 			arrayTitles.push(data.results[i]);
-			title.innerHTML += "<img id ='" + arrayTitles[i].name + "' src=" + data.results[i].image.thumb_url + "><h1><p id ='" + arrayTitles[i].name + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</p></h1>\n";
+			title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id ='image' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Developer: " + data.results[i].developer + "</td></tr><tr><td>Genre: " + data.results[i].genre + 
+			"</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
 		}
 	}
 }
 
 function Checker(htmlData){
-	console.log(htmlData.id);
-	console.log(document.getElementById(htmlData.id).src);
+	var gameName = "";
 	var deck = "";
+	var img = "";
 	for(var j = 0; j < arrayTitles.length; j++){
-		if(htmlData.id === arrayTitles[j].name){
+		if(arrayTitles[j].id.toString() === htmlData.id){
 			deck = arrayTitles[j].deck;
+			gameName = arrayTitles[j].name;
+			img = arrayTitles[j].image.medium_url;
 			break;
 		}
 	}
 	singleTitle.innerHTML = "";
-	singleTitle.innerHTML += "<img src=" + document.getElementById(htmlData.id).src + ">";
-	singleTitle.innerHTML += "<h1><p>" + htmlData.id + "</p></h1>\n";
+	singleTitle.innerHTML += "<img id='modalImage' src=" + img + ">";
+	singleTitle.innerHTML += "<h1><p>" + gameName + "</p></h1>\n";
 	singleTitle.innerHTML += "<p>" + deck + "</p>\n";
 	modal.style.display = "block";
 }
@@ -123,17 +141,3 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 };
-
-/*
-function NextScreenPic(){
-	console.log("Gamers Rise Up Pics Only");
-	window.open;
-}
-function NextScreenText(){
-	console.log("Gamers Rise Up Text Only");
-	var newQueryString = "?para1=" + myTitle;
-	var myWindowString = "file:///D:/Web%20&%20Internet%20Code/CS358_GameRepository_Theo/src/GamePage.html" + newQueryString;
-	window.location.href = myWindowString;
-	singleTitle.innerHTML += "<h1><p>" + myTitle + "</p></h1>\n";
-	
-}*/
