@@ -37,6 +37,7 @@ $(window).bind("load", function() {
 setInterval(function () {
   if(requests.length > 0)
   {
+	console.log(requests.length)
     var request = requests.pop();
     if(typeof request === "function")
     {
@@ -52,6 +53,7 @@ function gameQuery()
   loadCirc.addTo("gameTitle");
   var GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
   var query = titleText.value;
+  console.log(GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query)
   // send off the query
   requests.push(function() {
 		$.ajax({
@@ -87,8 +89,10 @@ function searchCallback(data)
 		var test = 0;
 		data.results.forEach(function(e){
 			platforms = "";
-			for(var k = 0; k < e.platforms.length; k++){
-				platforms += e.platforms[k].name + ", ";
+			if(e.platforms != null){
+				for(var k = 0; k < e.platforms.length; k++){
+					platforms += e.platforms[k].name + ", ";
+				}
 			}
 			platformsArray[test] = platforms;
 			test += 1;
@@ -107,6 +111,7 @@ function searchCallback(data)
 
 function gameInfoQuery(id)
 {
+	console.log(id)
 	var GamesSearchUrl = baseUrl + '/game/' + id + '/?api_key=' + apikey + '&format=jsonp';
 	requests.push(function() {
 		$.ajax({
@@ -130,7 +135,7 @@ function Checker(htmlData){
 	}
 	singleTitle.innerHTML = "";
 	modal.style.display = "block";
-	loadCirc.addTo("singleGameTitle")
+	loadCirc.addTo("singleGameTitle", true)
 	gameInfoQuery(gameId)
 }
 

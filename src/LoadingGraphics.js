@@ -6,9 +6,17 @@ class LoadingGraphics{
         this.myelement.style = "width:200px;height:200px;"
     }
 
-    addTo(divid)
+    addTo(divid, white = false)
     {
         var parent = document.getElementById(divid)
+        if(white)
+        {
+            this.myelement.src = "LoadingWhite.gif" 
+        }
+        else
+        {
+            this.myelement.src = "Loading.gif"
+        }
         parent.appendChild(this.myelement)
     }
     
