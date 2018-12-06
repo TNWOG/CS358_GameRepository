@@ -105,23 +105,40 @@ function searchCallback(data)
 	}
 }
 
+function gameInfoQuery(id)
+{
+	var GamesSearchUrl = baseUrl + '/game/' + id + '/?api_key=' + apikey + '&format=jsonp';
+	requests.push(function() {
+		$.ajax({
+		  url: GamesSearchUrl,
+		  type: "GET",
+		  dataType: "jsonp",
+		  crossDomain: true,
+		  jsonp: "json_callback",
+		  success: singleGameOutput
+		});
+  });
+}
+
 function Checker(htmlData){
-	var gameName = "";
-	var deck = "";
-	var img = "";
+	var gameId;
 	for(var j = 0; j < arrayTitles.length; j++){
 		if(arrayTitles[j].id.toString() === htmlData.id){
-			deck = arrayTitles[j].deck;
-			gameName = arrayTitles[j].name;
-			img = arrayTitles[j].image.medium_url;
+			gameId = arrayTitles[j].guid;
 			break;
 		}
 	}
 	singleTitle.innerHTML = "";
-	singleTitle.innerHTML += "<img id='modalImage' src=" + img + ">";
-	singleTitle.innerHTML += "<h1><p>" + gameName + "</p></h1>\n";
-	singleTitle.innerHTML += "<p>" + deck + "</p>\n";
 	modal.style.display = "block";
+	loadCirc.addTo("singleGameTitle")
+	gameInfoQuery(gameId)
+}
+
+function singleGameOutput(data)
+{
+	console.log(data)
+	loadCirc.remove()
+
 }
 
 // Get the modal
