@@ -152,6 +152,7 @@ function exclusiveSearchCallback(data)
 		{
 			document.getElementById("emptySearchOutput").innerHTML= noResults;
 		}
+	}
 }
 function gameInfoQuery(id)
 {
