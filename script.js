@@ -14,6 +14,7 @@ var arrayTitles = [];
 
 var titleText = document.getElementById("gameTitleSearch");
 var titleSubmit = document.getElementById("titleSubmit");
+var searchType = document.getElementsByName("searchType");
 titleSubmit.addEventListener("mousedown", gameQuery);
 titleText.addEventListener("keypress", function(e){
 	var key = e.which || e.keyCode;
@@ -56,15 +57,29 @@ function gameQuery()
   console.log(GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query)
   // send off the query
   requests.push(function() {
+		if(searchType[1].checked)
+	  {
 		$.ajax({
 		  url: GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query,
 		  type: "GET",
 		  dataType: "jsonp",
 		  crossDomain: true,
 		  jsonp: "json_callback",
-		  success: searchCallback
+		  success: exclusiveSearchCallback	
 		});
-  });
+	  }
+	  else
+	  {
+		  $.ajax({
+		  url: GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query,
+		  type: "GET",
+		  dataType: "jsonp",
+		  crossDomain: true,
+		  jsonp: "json_callback",
+		  success: searchCallback	
+		});
+	  }
+	});
 }
 
 // callback for when we get back the results
