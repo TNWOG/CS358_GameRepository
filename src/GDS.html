@@ -21,6 +21,18 @@
 	    <input type="radio" name="searchType" value="exclusive"> Exclusive<br>
 	  </form>
 	</div>
+	<div>
+		<input type="checkbox" id = "devCheck"/>Developer
+	</div>
+	<p>
+    		<label>Sort by</label>
+		<select id = "sortList">
+			<option value = "name:asc">A to Z</option>
+			<option value = "name:desc">Z to A</option>
+			<option value = "original_release_date:desc">Release Date: Newest to Oldest</option>
+			<option value = "original_release_date:asc">Release Date: Oldest to Newest</option>
+		</select>
+	</p>
 	
 	<p id = "emptySearchOutput"></p>
 
@@ -31,7 +43,7 @@
   		<div class="modal-content">
     		<span class="close">&times;</span>
     			<div id="singleGameTitle"></div>
-  		</div>
+			  		</div>
 
 	</div>
    
