@@ -163,3 +163,148 @@ window.onclick = function(event) {
         modal.style.display = "none";
     }
 };
+
+var tmkSel = document.createElement("select")
+var tmkBut = document.getElementById("tmkOpen")
+tmkBut.onclick = function(){
+	singleTitle.innerHTML = "";
+	modal.style.display = "block";
+	
+	var tmkOp1 = document.createElement("option")
+	tmkOp1.value = 94
+	tmkOp1.innerHTML = "PC"
+	tmkSel.appendChild(tmkOp1)
+	var tmkOp2 = document.createElement("option")
+	tmkOp2.value = 146
+	tmkOp2.innerHTML = "Playstation 4"
+	tmkSel.appendChild(tmkOp2)
+
+	var tmkEntr = document.createElement("button")
+	tmkEntr.innerHTML = "Enter!"
+	tmkEntr.setAttribute("onclick", "generateTmk(tmkSel.value)")
+	singleTitle.appendChild(tmkSel)
+	singleTitle.appendChild(tmkEntr)
+};
+
+function generateTmk(val){
+  singleTitle.innerHTML = "";
+  tmkSel.innerHTML = ""
+  loadCirc.addTo("singleGameTitle", true)
+  var GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
+  // send off the query
+	requests.push(function() {
+			$.ajax({
+			url: GamesSearchUrl + '&sort=name:asc' + '&filter=platforms:'+ val,
+			type: "GET",
+			dataType: "jsonp",
+			crossDomain: true,
+			jsonp: "json_callback",
+			success: calculatePageNum
+			});
+	});
+	function calculatePageNum(data)
+	{
+		console.log(data)
+		var pageNum = data.number_of_total_results/data.number_of_page_results;
+		var randPageIt = Math.ceil(Math.random()*pageNum)
+		console.log(randPageIt)
+		requests.push(function() {
+			$.ajax({
+			url: GamesSearchUrl + '&sort=name:asc' + '&filter=platforms:'+ val + '&offset=' + randPageIt*100,
+			type: "GET",
+			dataType: "jsonp",
+			crossDomain: true,
+			jsonp: "json_callback",
+			success: generateGame
+			});
+		});
+	}
+	function generateGame(data)
+	{
+		console.log(data)
+		var num = Math.floor(Math.random()*100)
+		console.log(num)
+		var game = data.results[num]
+		var gameId = game.id;
+		var GamesSearchUrl = baseUrl + '/game/' + gameId + '/?api_key=' + apikey + '&format=jsonp';
+		requests.push(function() {
+			$.ajax({
+			url: GamesSearchUrl,
+			type: "GET",
+			dataType: "jsonp",
+			crossDomain: true,
+			jsonp: "json_callback",
+			success: setupGame
+			});
+		});
+	}
+	function setupGame(data)
+	{
+		loadCirc.remove()
+		singleTitle.innerHTML = "";
+		console.log(data)
+		var gameTitle = data.results.title
+		var gameDescription = data.results.deck
+		var gameDev = data.results.developers
+		var gameConcepts = data.results.concepts
+		var gameCharacters = data.results.characters
+		var gameFranchise = data.results.franchises
+		var gameLocations = data.results.locations
+		var gameGenres = data.results.genres
+		var gameObjects = data.results.objects
+		var gameDate = data.results.original_release_date
+		var gameThemes = data.results.themes
+		var gamePublishers = data.results.publishers
+
+		var clues = []
+		//clues.push("This game is described as: " + gameDescription)
+		if(gameDev){
+			gameDev.forEach(function(e){
+				clues.push("This game was developed by: " + e.name)
+			})
+		}
+		if(gameConcepts){
+			gameConcepts.forEach(function(e){
+				clues.push("This game includes the concept of: " + e.name)
+			})
+		}
+		if(gameCharacters){
+			gameCharacters.forEach(function(e){
+				clues.push("This game includes the character: " + e.name)
+			})
+		}
+		if(gameFranchise){
+			gameFranchise.forEach(function(e){
+				clues.push("This game is from the franchise: " + e.name)
+			})
+		}
+		if(gameLocations){
+			gameLocations.forEach(function(e){
+				clues.push("This game takes place in: " + e.name)
+			})
+		}
+		if(gameGenres){
+			gameGenres.forEach(function(e){
+				clues.push("This game has the genre: " + e.name)
+			})
+		}
+		if(gameObjects){	
+			gameObjects.forEach(function(e){
+				clues.push("This game includes the object:" + e.name)
+			})
+		}
+		clues.push("This game was released on: " + gameDate)
+		if(gameThemes){
+			gameThemes.forEach(function(e){
+				clues.push("This game has the theme: " + e.name)
+			})
+		}
+		if(gamePublishers){
+			gamePublishers.forEach(function(e){
+				clues.push("This game was published by: " + e.name)
+			})
+		}
+		console.log(clues)
+
+	}
+};
