@@ -37,7 +37,6 @@ $(window).bind("load", function() {
 setInterval(function () {
   if(requests.length > 0)
   {
-	console.log(requests.length)
     var request = requests.pop();
     if(typeof request === "function")
     {
@@ -51,18 +50,26 @@ function gameQuery()
 {
   title.innerHTML = "";
   loadCirc.addTo("gameTitle");
+  var devSearch = $('#devCheck:checkbox:checked').length > 0;
   var GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
-  var query = titleText.value;
-  console.log(GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query)
+  if (devSearch == 1) {
+    GamesSearchUrl = baseUrl + '/companies/?api_key=' + apikey + '&format=jsonp';
+  }
+  query = titleText.value
+  var searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
+  if (devSearch == 1) {
+    searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
+  }
+  
   // send off the query
   requests.push(function() {
-		$.ajax({
-		  url: GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query,
-		  type: "GET",
-		  dataType: "jsonp",
-		  crossDomain: true,
-		  jsonp: "json_callback",
-		  success: searchCallback
+    $.ajax({
+      url: searchUrl,
+      type: "GET",
+      dataType: "jsonp",
+      crossDomain: true,
+      jsonp: "json_callback",
+      success: searchCallback
 		});
   });
 }
@@ -89,13 +96,14 @@ function searchCallback(data)
 		var test = 0;
 		data.results.forEach(function(e){
 			platforms = "";
-			if(e.platforms != null){
-				for(var k = 0; k < e.platforms.length; k++){
+				if(e.platforms !== null){
+					for(var k = 0; k < e.platforms.length; k++){
 					platforms += e.platforms[k].name + ", ";
 				}
+				platformsArray[test] = platforms;
+				test += 1;
 			}
-			platformsArray[test] = platforms;
-			test += 1;
+
 		});
 		
 		
@@ -160,8 +168,22 @@ function exclusiveSearchCallback(data)
 
 function gameInfoQuery(id)
 {
-	console.log(id)
 	var GamesSearchUrl = baseUrl + '/game/' + id + '/?api_key=' + apikey + '&format=jsonp';
+	requests.push(function() {
+		$.ajax({
+		  url: GamesSearchUrl,
+		  type: "GET",
+		  dataType: "jsonp",
+		  crossDomain: true,
+		  jsonp: "json_callback",
+		  success: singleGameOutput
+		});
+  });
+}
+
+function similarGamesInfoQuery(id)
+{
+	var GamesSearchUrl = id + '/?api_key=' + apikey + '&format=jsonp';
 	requests.push(function() {
 		$.ajax({
 		  url: GamesSearchUrl,
@@ -184,14 +206,58 @@ function Checker(htmlData){
 	}
 	singleTitle.innerHTML = "";
 	modal.style.display = "block";
-	loadCirc.addTo("singleGameTitle", true)
+	loadCirc.addTo("singleGameTitle")
 	gameInfoQuery(gameId)
 }
 
 function singleGameOutput(data)
 {
-	console.log(data)
-	loadCirc.remove()
+	console.log(data);
+	var genreString = "";
+	if(data.results.genres.length !== null){
+		for(var g = 0; g < data.results.genres.length; g++){
+			genreString += data.results.genres[g].name + "<br>";
+		}	
+	}
+	
+	var devString = "";
+	if(data.results.developers.length !== null){
+		for(var d = 0; d < data.results.developers.length; d++){
+			devString += data.results.developers[d].name + "<br>";
+		}	
+	}
+	
+	var platformString = "";
+	if(data.results.platforms.length !== null){
+		for(var p = 0; p < data.results.platforms.length; p++){
+			platformString += data.results.platforms[p].name + "<br>";
+		}	
+	}
+	
+	var similarString = "";
+	if(data.results.similar_games.length !== null){
+		for(var s = 0; s < data.results.similar_games.length; s++){
+			similarString += data.results.similar_games[s].name + "<br>";
+		}	
+	}
+	
+//	for(var i = 0; i <  data.results.length; i++)
+//		{
+//			arrayTitles.push(data.results[i]);
+//			singleTitle.innerHTML += "<table><tr><th id='modalImage' rowspan='5'>" + data.results.image.medium_url + "</th><th colspan='2'>";
+//			singleTitle.innerHTML += "<td><h1><p id='modalName'>" + data.results.name + "</td></table><br>";
+//		}
+	
+	loadCirc.remove();
+	singleTitle.innerHTML += "<img id='modalImage' src=" + data.results.image.medium_url + "></p>";
+	singleTitle.innerHTML += "<h1><p id='modalName'>" + data.results.name + "</p></h1>\n";
+	singleTitle.innerHTML += "<p id='modalDesc'>" + data.results.deck + "</p>\n";
+	singleTitle.innerHTML += "<p id='modalGenres'>" + genreString + "</p>\n";
+	singleTitle.innerHTML += "<p id='modalRelease'>" + data.results.original_release_date + "</p>\n";
+	singleTitle.innerHTML += "<p id='modalDevelopers'>" + devString + "</p>\n";
+	singleTitle.innerHTML += "<p id='modalPlatforms'>" + platformString + "</p>\n";
+	singleTitle.innerHTML += "<p id='modalSimilar'>" + similarString + "</p>\n"; 
+	modal.style.display = "block";
 
 }
 
