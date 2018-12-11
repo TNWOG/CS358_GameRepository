@@ -6,7 +6,6 @@ var NUMBER_OF_REQUESTS = 0;
 
 var title = document.getElementById("gameTitle");
 var image = document.getElementById("gameImage");
-var searchType = document.getElementsByName("searchType");
 
 var loadCirc = new LoadingGraphics()
 
@@ -38,6 +37,7 @@ $(window).bind("load", function() {
 setInterval(function () {
   if(requests.length > 0)
   {
+	console.log(requests.length)
     var request = requests.pop();
     if(typeof request === "function")
     {
@@ -53,31 +53,18 @@ function gameQuery()
   loadCirc.addTo("gameTitle");
   var GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
   var query = titleText.value;
+  console.log(GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query)
   // send off the query
   requests.push(function() {
-	  if(searchType[1].checked)
-	  {
 		$.ajax({
 		  url: GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query,
 		  type: "GET",
 		  dataType: "jsonp",
 		  crossDomain: true,
 		  jsonp: "json_callback",
-		  success: exclusiveSearchCallback	
+		  success: searchCallback
 		});
-	  }
-	  else
-	  {
-		  $.ajax({
-		  url: GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query,
-		  type: "GET",
-		  dataType: "jsonp",
-		  crossDomain: true,
-		  jsonp: "json_callback",
-		  success: searchCallback	
-		});
-	  }
-	});
+  });
 }
 
 // callback for when we get back the results
@@ -102,8 +89,10 @@ function searchCallback(data)
 		var test = 0;
 		data.results.forEach(function(e){
 			platforms = "";
-			for(var k = 0; k < e.platforms.length; k++){
-				platforms += e.platforms[k].name + ", ";
+			if(e.platforms != null){
+				for(var k = 0; k < e.platforms.length; k++){
+					platforms += e.platforms[k].name + ", ";
+				}
 			}
 			platformsArray[test] = platforms;
 			test += 1;
@@ -119,6 +108,7 @@ function searchCallback(data)
 		}
 	}
 }
+
 function exclusiveSearchCallback(data)
 {
 	loadCirc.remove();
@@ -137,6 +127,19 @@ function exclusiveSearchCallback(data)
 	else
 	{
 		document.getElementById("emptySearchOutput").innerHTML= "";
+		
+		var test = 0;
+		data.results.forEach(function(e){
+			platforms = "";
+			if(e.platforms != null){
+				for(var k = 0; k < e.platforms.length; k++){
+					platforms += e.platforms[k].name + ", ";
+				}
+			}
+			platformsArray[test] = platforms;
+			test += 1;
+		});
+		
 		for(var i=0; i < data.results.length; i++)
 		{				
 			if(data.results[i].name.toLocaleUpperCase().includes(query.toLocaleUpperCase() + " ",0) || 			 	data.results[i].name.toLocaleUpperCase() === query.toLocaleUpperCase()) 
@@ -154,8 +157,10 @@ function exclusiveSearchCallback(data)
 		}
 	}
 }
+
 function gameInfoQuery(id)
 {
+	console.log(id)
 	var GamesSearchUrl = baseUrl + '/game/' + id + '/?api_key=' + apikey + '&format=jsonp';
 	requests.push(function() {
 		$.ajax({
@@ -179,7 +184,7 @@ function Checker(htmlData){
 	}
 	singleTitle.innerHTML = "";
 	modal.style.display = "block";
-	loadCirc.addTo("singleGameTitle")
+	loadCirc.addTo("singleGameTitle", true)
 	gameInfoQuery(gameId)
 }
 
