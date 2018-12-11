@@ -51,18 +51,26 @@ function gameQuery()
 {
   title.innerHTML = "";
   loadCirc.addTo("gameTitle");
+  var devSearch = $('#devCheck:checkbox:checked').length > 0;
   var GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
-  var query = titleText.value;
-  console.log(GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query)
+  if (devSearch == 1) {
+    GamesSearchUrl = baseUrl + '/companies/?api_key=' + apikey + '&format=jsonp';
+  }
+  query = titleText.value
+  var searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
+  if (devSearch == 1) {
+    searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
+  }
+  
   // send off the query
   requests.push(function() {
-		$.ajax({
-		  url: GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query,
-		  type: "GET",
-		  dataType: "jsonp",
-		  crossDomain: true,
-		  jsonp: "json_callback",
-		  success: searchCallback
+    $.ajax({
+      url: searchUrl,
+      type: "GET",
+      dataType: "jsonp",
+      crossDomain: true,
+      jsonp: "json_callback",
+      success: searchCallback
 		});
   });
 }
