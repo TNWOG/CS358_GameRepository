@@ -347,7 +347,7 @@ var tmkBut = document.getElementById("tmkOpen")
 tmkBut.onclick = function(){
 	singleTitle.innerHTML = "";
 	modal.style.display = "block";
-	
+	tmkSel.innerHTML = ""
 	var tmkOp1 = document.createElement("option")
 	tmkOp1.value = 94
 	tmkOp1.innerHTML = "PC"
@@ -356,13 +356,23 @@ tmkBut.onclick = function(){
 	tmkOp2.value = 146
 	tmkOp2.innerHTML = "Playstation 4"
 	tmkSel.appendChild(tmkOp2)
-
+	var tmkOp3 = document.createElement("option")
+	tmkOp3.value = 157
+	tmkOp3.innerHTML = "Nintendo Switch"
+	tmkSel.appendChild(tmkOp3)
+	var tmkOp4 = document.createElement("option")
+	tmkOp4.value = 145
+	tmkOp4.innerHTML = "Xbox One"
+	tmkSel.appendChild(tmkOp4)
 	var tmkEntr = document.createElement("button")
 	tmkEntr.innerHTML = "Enter!"
 	tmkEntr.setAttribute("onclick", "generateTmk(tmkSel.value)")
 	singleTitle.appendChild(tmkSel)
 	singleTitle.appendChild(tmkEntr)
 };
+
+var clues = [];
+var gameName, clueArea, clueGuess, TYKimg;
 
 function generateTmk(val){
   singleTitle.innerHTML = "";
@@ -416,12 +426,13 @@ function generateTmk(val){
 			});
 		});
 	}
+
 	function setupGame(data)
 	{
 		loadCirc.remove()
 		singleTitle.innerHTML = "";
 		console.log(data)
-		var gameTitle = data.results.title
+		gameName = data.results.name
 		var gameDescription = data.results.deck
 		var gameDev = data.results.developers
 		var gameConcepts = data.results.concepts
@@ -434,7 +445,8 @@ function generateTmk(val){
 		var gameThemes = data.results.themes
 		var gamePublishers = data.results.publishers
 
-		var clues = []
+		TYKimg = data.results.image.medium_url 
+		clues = []
 		//clues.push("This game is described as: " + gameDescription)
 		if(gameDev){
 			gameDev.forEach(function(e){
@@ -482,7 +494,90 @@ function generateTmk(val){
 				clues.push("This game was published by: " + e.name)
 			})
 		}
-		console.log(clues)
-
+		clueArea = document.createElement("div")
+		clueArea.id = "clueArea"
+		singleTitle.appendChild(clueArea)
+		clueGuess = document.createElement("input")
+		clueGuess.type = "text"
+		clueGuess.id = "clueGuess"
+		clueGuess.placeholder = "Enter guess..."
+		singleTitle.appendChild(clueGuess)
+		clueSet = document.createElement("button")
+		clueSet.innerHTML = "Enter"
+		clueSet.setAttribute("onclick", "updateGuess()")
+		singleTitle.appendChild(clueSet)
+		clueSet.click()
 	}
 };
+
+function updateGuess()
+{
+	var numOfClues = clues.length
+	var answerPercent = similarity(gameName, clueGuess.value)
+	console.log(answerPercent)
+	if(answerPercent<0.75){
+		if(numOfClues>0)
+		{
+			var thisClueNum = Math.floor(Math.random()*numOfClues) 
+			var thisClue = clues[thisClueNum]
+			clues.splice(thisClueNum, 1)
+			console.log(clues)
+			clueArea.innerHTML += "<p id='clue" + thisClueNum + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
+		}
+		else{
+			singleTitle.removeChild(clueSet)
+			singleTitle.removeChild(clueGuess)
+			clueArea.innerHTML += "<p id = 'answer'>The correct answer is " + gameName + "! You Lose!</p>"
+			clueArea.innerHTML += "<p><img id='TYKimg' src=" + TYKimg + "></p>";
+		}
+	
+	}
+	else
+	{
+		singleTitle.removeChild(clueSet)
+		singleTitle.removeChild(clueGuess)
+		clueArea.innerHTML += "<p id = 'answer'>The answer is "+ gameName+"! You win!</p>"
+		clueArea.innerHTML += "<p><img id='TYKimg' src=" + TYKimg + "></p>";
+	}
+}
+
+function similarity(s1, s2) {
+	var longer = s1;
+	var shorter = s2;
+	if (s1.length < s2.length) {
+	  longer = s2;
+	  shorter = s1;
+	}
+	var longerLength = longer.length;
+	if (longerLength == 0) {
+	  return 1.0;
+	}
+	return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
+  }
+
+  function editDistance(s1, s2) {
+	s1 = s1.toLowerCase();
+	s2 = s2.toLowerCase();
+  
+	var costs = new Array();
+	for (var i = 0; i <= s1.length; i++) {
+	  var lastValue = i;
+	  for (var j = 0; j <= s2.length; j++) {
+		if (i == 0)
+		  costs[j] = j;
+		else {
+		  if (j > 0) {
+			var newValue = costs[j - 1];
+			if (s1.charAt(i - 1) != s2.charAt(j - 1))
+			  newValue = Math.min(Math.min(newValue, lastValue),
+				costs[j]) + 1;
+			costs[j - 1] = lastValue;
+			lastValue = newValue;
+		  }
+		}
+	  }
+	  if (i > 0)
+		costs[s2.length] = lastValue;
+	}
+	return costs[s2.length];
+  }
