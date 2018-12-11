@@ -109,6 +109,55 @@ function searchCallback(data)
 	}
 }
 
+function exclusiveSearchCallback(data)
+{
+	loadCirc.remove();
+	arrayTitles = [];
+	var arrayGame = [];
+	var platforms = "";
+	var platformsArray = [];
+	var zero = 0;
+	title.innerHTML = "";
+	var query= titleText.value;
+	var count=0;
+	if(data.number_of_page_results==0)
+	{
+		document.getElementById("emptySearchOutput").innerHTML= noResults;
+	}
+	else
+	{
+		document.getElementById("emptySearchOutput").innerHTML= "";
+		
+		var test = 0;
+		data.results.forEach(function(e){
+			platforms = "";
+			if(e.platforms != null){
+				for(var k = 0; k < e.platforms.length; k++){
+					platforms += e.platforms[k].name + ", ";
+				}
+			}
+			platformsArray[test] = platforms;
+			test += 1;
+		});
+		
+		for(var i=0; i < data.results.length; i++)
+		{				
+			if(data.results[i].name.toLocaleUpperCase().includes(query.toLocaleUpperCase() + " ",0) || 			 	data.results[i].name.toLocaleUpperCase() === query.toLocaleUpperCase()) 
+			{
+				arrayTitles.push(data.results[i]);
+				title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id ='image' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Developer: " + data.results[i].developer + "</td></tr><tr><td>Genre: " + data.results[i].genre + 
+				"</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
+						
+				count++;
+			}
+		}
+		if(count == 0)
+		{
+			document.getElementById("emptySearchOutput").innerHTML= noResults;
+		}
+	}
+}
+
 function gameInfoQuery(id)
 {
 	console.log(id)
