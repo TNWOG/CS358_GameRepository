@@ -46,3 +46,45 @@
 		text-decoration: none;
 		cursor: pointer;
 	}
+
+#modalImage {
+}
+
+#modalName {
+	color: blue;
+}
+
+#modalDesc {
+	font-size: 14;
+	text-align: center;
+}
+
+#modalGenres {
+	font-size: 14;
+	text-align: center;
+}
+
+#modalRelease {
+	font-size: 14;
+	text-align: center;
+}
+
+#modalDevelopers {
+	font-size: 14;
+	text-align: center;
+}
+
+#modalDevelopers {
+	font-size: 14;
+	text-align: center;
+}
+
+modalPlatforms {
+	font-size: 14;
+	text-align: center;
+}
+
+modalSimilar {
+	font-size: 14;
+	text-align: center;
+}
