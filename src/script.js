@@ -6,15 +6,19 @@ var NUMBER_OF_REQUESTS = 0;
 
 var title = document.getElementById("gameTitle");
 var image = document.getElementById("gameImage");
+var searchType = document.getElementsByName("searchType");
+var pageNum = document.getElementById("pageCount");
 
 var loadCirc = new LoadingGraphics()
 
 var singleTitle = document.getElementById("singleGameTitle");
 var arrayTitles = [];
 
+var globalStartNum = 0;
+var globalEndNum = 0;
+
 var titleText = document.getElementById("gameTitleSearch");
 var titleSubmit = document.getElementById("titleSubmit");
-var searchType = document.getElementsByName("searchType");
 titleSubmit.addEventListener("mousedown", gameQuery);
 titleText.addEventListener("keypress", function(e){
 	var key = e.which || e.keyCode;
@@ -61,10 +65,10 @@ function gameQuery()
   if (devSearch == 1) {
     searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
   }
-  
+  var query = titleText.value;
   // send off the query
   requests.push(function() {
-    if(searchType[1].checked)
+	if(searchType[1].checked)
 	  {
 		$.ajax({
 		  url: GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query,
@@ -94,12 +98,10 @@ function searchCallback(data)
 {
 	loadCirc.remove();
 	arrayTitles = [];
-	var arrayGame = [];
 	var platforms = "";
 	var platformsArray = [];
-	var zero = 0;
 	title.innerHTML = "";
-	if(data.number_of_page_results==0)
+	if(data.number_of_page_results === 0)
 	{
 		//refers to a paragraph in the html with id="output"
 		document.getElementById("emptySearchOutput").innerHTML=noResults;
@@ -108,26 +110,28 @@ function searchCallback(data)
 	{
 		document.getElementById("emptySearchOutput").innerHTML="";
 		
+		Pages(data);
+		
 		var test = 0;
 		data.results.forEach(function(e){
-			platforms = "";
-				if(e.platforms !== null){
-					for(var k = 0; k < e.platforms.length; k++){
-					platforms += e.platforms[k].name + ", ";
-				}
-				platformsArray[test] = platforms;
-				test += 1;
+			var platforms = "";
+			if(e.platforms !== null){
+				for(var k = 0; k < e.platforms.length; k++){
+					if(k === e.platforms.length - 1){
+						platforms += e.platforms[k].name;
+						break;
+					}
+				platforms += e.platforms[k].name + ", ";
 			}
-
+			platformsArray[test] = platforms;
+			test += 1;
+			}
 		});
 		
-		
-		
-		for(var i = 0; i <  data.results.length; i++)
+		for(var i = globalStartNum - 1; i <= globalEndNum - 1; i++)
 		{
 			arrayTitles.push(data.results[i]);
-			title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id ='image' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Developer: " + data.results[i].developer + "</td></tr><tr><td>Genre: " + data.results[i].genre + 
-			"</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
+			title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id ='image' onclick='Checker(this)' class='pointer' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
 		}
 	}
 }
@@ -136,14 +140,12 @@ function exclusiveSearchCallback(data)
 {
 	loadCirc.remove();
 	arrayTitles = [];
-	var arrayGame = [];
 	var platforms = "";
 	var platformsArray = [];
-	var zero = 0;
 	title.innerHTML = "";
 	var query= titleText.value;
 	var count=0;
-	if(data.number_of_page_results==0)
+	if(data.number_of_page_results === 0)
 	{
 		document.getElementById("emptySearchOutput").innerHTML= noResults;
 	}
@@ -151,34 +153,80 @@ function exclusiveSearchCallback(data)
 	{
 		document.getElementById("emptySearchOutput").innerHTML= "";
 		
+		Pages(data);
+		
 		var test = 0;
 		data.results.forEach(function(e){
 			platforms = "";
-			if(e.platforms != null){
+			if(e.platforms !== null){
 				for(var k = 0; k < e.platforms.length; k++){
-					platforms += e.platforms[k].name + ", ";
-				}
+					if(k === e.platforms.length - 1){
+						platforms += e.platforms[k].name;
+						break;
+					}
+				platforms += e.platforms[k].name + ", ";
 			}
 			platformsArray[test] = platforms;
 			test += 1;
+			}
 		});
 		
-		for(var i=0; i < data.results.length; i++)
+		for(var i = globalStartNum - 1; i < globalEndNum - 1; i++)
 		{				
 			if(data.results[i].name.toLocaleUpperCase().includes(query.toLocaleUpperCase() + " ",0) || 			 	data.results[i].name.toLocaleUpperCase() === query.toLocaleUpperCase()) 
 			{
 				arrayTitles.push(data.results[i]);
-				title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id ='image' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Developer: " + data.results[i].developer + "</td></tr><tr><td>Genre: " + data.results[i].genre + 
-				"</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
+				title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id ='image' onclick='Checker(this)' class='pointer' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
 						
 				count++;
 			}
 		}
-		if(count == 0)
+		if(count === 0)
 		{
 			document.getElementById("emptySearchOutput").innerHTML= noResults;
 		}
 	}
+}
+
+function Pages(gameCount){
+	var gameTest = gameCount;
+	var everyTen = 10;
+	var counter = 1;
+	var counterString = "";
+	pageNum.innerHTML = "";
+	if(gameCount.results.length > 10){
+		for(var q = 0; q < gameCount.results.length; q++){
+			if(q%everyTen === 0){
+				pageNum.innerHTML += "<a id=" + counter + " onclick ='PageNumber(this.id)' class='pointer'>" + counter + " </a>";
+				counter++;
+			}
+		}
+	}
+}
+
+function PageNumber(myPage){
+	console.log(myPage);
+	
+	var resultStart = myPage;
+	var resultsEnd = myPage * 10;
+	
+	console.log("reStart: " + resultStart + "reEnd: " + resultsEnd);
+	
+	if(myPage > 1){
+		resultStart = resultsEnd - 10 + 1;
+		resultsEnd = myPage * 10 - 1;
+		
+		globalStartNum = resultStart;
+		globalEndNum = resultsEnd;
+		
+		console.log("reStart: " + resultStart + "reEnd: " + resultsEnd);
+	}
+	else{
+		globalStartNum = resultStart;
+		globalEndNum = resultsEnd;
+	}
+	
+	gameQuery();
 }
 
 function gameInfoQuery(id)
@@ -212,6 +260,7 @@ function similarGamesInfoQuery(id)
 }
 
 function Checker(htmlData){
+	console.log(htmlData);
 	var gameId;
 	for(var j = 0; j < arrayTitles.length; j++){
 		if(arrayTitles[j].id.toString() === htmlData.id){
@@ -221,8 +270,8 @@ function Checker(htmlData){
 	}
 	singleTitle.innerHTML = "";
 	modal.style.display = "block";
-	loadCirc.addTo("singleGameTitle")
-	gameInfoQuery(gameId)
+	loadCirc.addTo("singleGameTitle");
+	gameInfoQuery(gameId);
 }
 
 function singleGameOutput(data)
@@ -273,7 +322,6 @@ function singleGameOutput(data)
 	singleTitle.innerHTML += "<p id='modalPlatforms'>" + platformString + "</p>\n";
 	singleTitle.innerHTML += "<p id='modalSimilar'>" + similarString + "</p>\n"; 
 	modal.style.display = "block";
-
 }
 
 // Get the modal
