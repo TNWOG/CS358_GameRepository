@@ -131,7 +131,7 @@ function searchCallback(data)
 		for(var i = globalStartNum - 1; i <= globalEndNum - 1; i++)
 		{
 			arrayTitles.push(data.results[i]);
-			title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id ='image' onclick='Checker(this)' class='pointer' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
+			title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id = " + data.results[i].id + " onclick='Checker(this)' class='pointer' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
 		}
 	}
 }
@@ -278,28 +278,28 @@ function singleGameOutput(data)
 {
 	console.log(data);
 	var genreString = "";
-	if(data.results.genres.length !== null){
+	if(data.results.genres !== null){
 		for(var g = 0; g < data.results.genres.length; g++){
 			genreString += data.results.genres[g].name + "<br>";
 		}	
 	}
 	
 	var devString = "";
-	if(data.results.developers.length !== null){
+	if(data.results.developers !== null){
 		for(var d = 0; d < data.results.developers.length; d++){
 			devString += data.results.developers[d].name + "<br>";
 		}	
 	}
 	
 	var platformString = "";
-	if(data.results.platforms.length !== null){
+	if(data.results.platforms !== null){
 		for(var p = 0; p < data.results.platforms.length; p++){
 			platformString += data.results.platforms[p].name + "<br>";
 		}	
 	}
 	
 	var similarString = "";
-	if(data.results.similar_games.length !== null){
+	if(data.results.similar_games !== null){
 		for(var s = 0; s < data.results.similar_games.length; s++){
 			similarString += data.results.similar_games[s].name + "<br>";
 		}	
