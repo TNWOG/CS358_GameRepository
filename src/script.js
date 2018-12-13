@@ -303,7 +303,7 @@ function Checker(htmlData){
 	}
 	singleTitle.innerHTML = "";
 	modal.style.display = "block";
-	loadCirc.addTo("singleGameTitle");
+	loadCirc.addTo("singleGameTitle", true);
 	gameInfoQuery(gameId);
 }
 
@@ -333,7 +333,8 @@ function singleGameOutput(data)
 	
 	var similarString = "";
 	if(data.results.similar_games !== null){
-		for(var s = 0; s < 5; s++){
+		var min = Math.min(data.results.similar_games.length, 5)
+		for(var s = 0; s < min; s++){
 			similarString += data.results.similar_games[s].name + "<br>";
 		}	
 	} else{
