@@ -56,7 +56,11 @@ function gameQuery()
   title.innerHTML = "";
   loadCirc.addTo("gameTitle");
   var devSearch = $('#devCheck:checkbox:checked').length > 0;
-  var GamesSearchUrl, searchUrl
+  var GamesSearchUrl, searchUrl, sort
+  
+
+
+
   if (devSearch == 1) {
     GamesSearchUrl = baseUrl + '/companies/?api_key=' + apikey + '&format=jsonp';
   }
@@ -65,10 +69,10 @@ function gameQuery()
   }
   query = titleText.value
   if (devSearch == 1) {
-    searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
+    searchUrl = GamesSearchUrl + '&filter=name:'+ query;
   }
   else{
-  	searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
+  	searchUrl = GamesSearchUrl + '&filter=name:'+ query;
   }
   var query = titleText.value;
   // send off the query
@@ -76,7 +80,7 @@ function gameQuery()
 	if(searchType[1].checked)
 	  {
 		$.ajax({
-		  url: GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query,
+		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
 		  type: "GET",
 		  dataType: "jsonp",
 		  crossDomain: true,
@@ -87,7 +91,7 @@ function gameQuery()
 	  else
 	  {
 		  $.ajax({
-		  url: GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query,
+		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
 		  type: "GET",
 		  dataType: "jsonp",
 		  crossDomain: true,
@@ -132,6 +136,7 @@ function searchCallback(data)
 			test += 1;
 			}
 		});
+		console.log(data)
 		for(var i = globalStartNum - 1; i <= globalEndNum - 1; i++)
 		{
 			arrayTitles.push(data.results[i]);
