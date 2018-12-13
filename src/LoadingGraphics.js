@@ -22,6 +22,8 @@ class LoadingGraphics{
     
     remove()
     {
-        this.myelement.parentNode.removeChild(this.myelement)
+        if(this.myelement.parentNode){
+            this.myelement.parentNode.removeChild(this.myelement)
+        }
     }
 }

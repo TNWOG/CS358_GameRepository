@@ -132,7 +132,6 @@ function searchCallback(data)
 			test += 1;
 			}
 		});
-		
 		for(var i = globalStartNum - 1; i <= globalEndNum - 1; i++)
 		{
 			arrayTitles.push(data.results[i]);
