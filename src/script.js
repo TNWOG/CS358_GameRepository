@@ -557,12 +557,11 @@ function updateGuess()
 			var thisClue = clues[thisClueNum]
 			clues.splice(thisClueNum, 1)
 			console.log(clues)
-<<<<<<< HEAD
+
 			clueArea.innerHTML += "<p id='clue" + /* thisClueNum */ + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
-=======
 			clueArea.innerHTML += "<p id='clue" + thisClueNum + "'>You are " + answerPercent.toFixed(2)*100 + "% correct. \n" + thisClue +"</p>"
 			updateScroll();
->>>>>>> origin/master
+
 		}
 		else{
 			singleTitle.removeChild(clueSet)
