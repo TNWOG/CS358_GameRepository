@@ -521,7 +521,7 @@ function updateGuess()
 			var thisClue = clues[thisClueNum]
 			clues.splice(thisClueNum, 1)
 			console.log(clues)
-			clueArea.innerHTML += "<p id='clue"/* + thisClueNum + */"'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
+			clueArea.innerHTML += "<p id='clue" + thisClueNum + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
 		}
 		else{
 			singleTitle.removeChild(clueSet)
