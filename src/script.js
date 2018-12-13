@@ -14,7 +14,7 @@ var loadCirc = new LoadingGraphics()
 var singleTitle = document.getElementById("singleGameTitle");
 var arrayTitles = [];
 
-var globalStartNum = 0;
+var globalStartNum = -1;
 var globalEndNum = 0;
 
 var titleText = document.getElementById("gameTitleSearch");
@@ -114,6 +114,7 @@ function searchCallback(data)
 	{
 		//refers to a paragraph in the html with id="output"
 		document.getElementById("emptySearchOutput").innerHTML=noResults;
+		pageNum.innerHTML = "";
 	}
 	else
 	{
@@ -157,6 +158,7 @@ function exclusiveSearchCallback(data)
 	if(data.number_of_page_results === 0)
 	{
 		document.getElementById("emptySearchOutput").innerHTML= noResults;
+		pageNum.innerHTML = "";
 	}
 	else
 	{
@@ -210,6 +212,9 @@ function Pages(gameCount){
 				counter++;
 			}
 		}
+	}
+	if(globalStartNum === -1){
+		PageNumber(1);
 	}
 }
 
