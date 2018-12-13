@@ -1,0 +1,41 @@
+@charset "utf-8";
+/* CSS Document */
+
+#optionSelect{
+	
+}
+#guessButton{
+	text-align: center;
+	font-size: 16pt;
+}
+
+#clueGuess{
+	/*want to center in modal box*/
+	text-align: center;
+	display: 
+}
+
+#clueArea{
+	width: 90%;
+	height: 500px;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	padding-left: 25px;
+	padding-right: 20px;
+	color: #2307B4;
+	font-weight: bold;
+}
+.clue{
+	color: #2307B4;
+	font-size: 14pt;
+	
+}
+#wrongAnswer{
+	color: #C0080B;
+}
+#rightAnswer{
+	color: #0ECD06;
+}

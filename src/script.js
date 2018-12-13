@@ -308,24 +308,22 @@ function singleGameOutput(data)
 		for(var s = 0; s < data.results.similar_games.length; s++){
 			similarString += data.results.similar_games[s].name + "<br>";
 		}	
+	} else{
+		similarString = "None";
 	}
 	
-//	for(var i = 0; i <  data.results.length; i++)
-//		{
-//			arrayTitles.push(data.results[i]);
-//			singleTitle.innerHTML += "<table><tr><th id='modalImage' rowspan='5'>" + data.results.image.medium_url + "</th><th colspan='2'>";
-//			singleTitle.innerHTML += "<td><h1><p id='modalName'>" + data.results.name + "</td></table><br>";
-//		}
-	
 	loadCirc.remove();
-	singleTitle.innerHTML += "<img id='modalImage' src=" + data.results.image.medium_url + "></p>";
-	singleTitle.innerHTML += "<h1><p id='modalName'>" + data.results.name + "</p></h1>\n";
-	singleTitle.innerHTML += "<p id='modalDesc'>" + data.results.deck + "</p>\n";
-	singleTitle.innerHTML += "<p id='modalGenres'>" + genreString + "</p>\n";
-	singleTitle.innerHTML += "<p id='modalRelease'>" + data.results.original_release_date + "</p>\n";
-	singleTitle.innerHTML += "<p id='modalDevelopers'>" + devString + "</p>\n";
-	singleTitle.innerHTML += "<p id='modalPlatforms'>" + platformString + "</p>\n";
-	singleTitle.innerHTML += "<p id='modalSimilar'>" + similarString + "</p>\n"; 
+	
+	singleTitle.innerHTML += "<table><tr><th id='modalTableName' rowspan='5'><td><h1><p id='modalName'>" + data.results.name + "</td></h1></tr></th>" + "<th colspan='2'><tr><td><img id='modalImage' src=" + data.results.image.medium_url + "></td>" + "<td><p id='modalDesc'>" + data.results.deck + "</td></tr></th>" + "<th colspan='2'><tr><td><p id='modalGenres'>" + genreString + "</td></tr>" + "<tr><td><p id='modalRelease'>" + data.results.original_release_date + "</td></tr></th>" + "<th colspan='2'><tr><td><p id='modalDevelopers'>" + devString + "</td></tr>" + "<tr><td><p id='modalPlatforms'>" + platformString + "</td></tr></th>" + "</table><br>";
+	
+//	singleTitle.innerHTML += "<img id='modalImage' src=" + data.results.image.medium_url + "></p>";
+//	singleTitle.innerHTML += "<h1><p id='modalName'>" + data.results.name + "</p></h1>\n";
+//	singleTitle.innerHTML += "<p id='modalDesc'>" + data.results.deck + "</p>\n";
+//	singleTitle.innerHTML += "<p id='modalGenres'>" + genreString + "</p>\n";
+//	singleTitle.innerHTML += "<p id='modalRelease'>" + data.results.original_release_date + "</p>\n";
+//	singleTitle.innerHTML += "<p id='modalDevelopers'>" + devString + "</p>\n";
+//	singleTitle.innerHTML += "<p id='modalPlatforms'>" + platformString + "</p>\n";
+//	singleTitle.innerHTML += "<p id='modalSimilar'>" + similarString + "</p>\n"; 
 	modal.style.display = "block";
 }
 
@@ -347,8 +345,9 @@ window.onclick = function(event) {
     }
 };
 
-var tmkSel = document.createElement("select")
-var tmkBut = document.getElementById("tmkOpen")
+var tmkSel = document.createElement("select");
+var tmkBut = document.getElementById("tmkOpen");
+tmkSel.id="optionSelect";
 tmkBut.onclick = function(){
 	singleTitle.innerHTML = "";
 	modal.style.display = "block";
@@ -534,7 +533,7 @@ function updateGuess()
 		else{
 			singleTitle.removeChild(clueSet)
 			singleTitle.removeChild(clueGuess)
-			clueArea.innerHTML += "<p id = 'answer'>The correct answer is " + gameName + "! You Lose!</p>"
+			clueArea.innerHTML += "<p id = 'wrongAnswer'>The correct answer is " + gameName + "! You Lose!</p>"
 			clueArea.innerHTML += "<p><img id='TYKimg' src=" + TYKimg + "></p>";
 		}
 	
@@ -543,7 +542,7 @@ function updateGuess()
 	{
 		singleTitle.removeChild(clueSet)
 		singleTitle.removeChild(clueGuess)
-		clueArea.innerHTML += "<p id = 'answer'>The answer is "+ gameName+"! You win!</p>"
+		clueArea.innerHTML += "<p id = 'rightAnswer'>The answer is "+ gameName+"! You win!</p>"
 		clueArea.innerHTML += "<p><img id='TYKimg' src=" + TYKimg + "></p>";
 	}
 }
