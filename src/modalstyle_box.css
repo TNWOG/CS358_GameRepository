@@ -57,34 +57,35 @@
 #modalDesc {
 	font-size: 14;
 	text-align: center;
+	color: blue;
 }
 
 #modalGenres {
 	font-size: 14;
 	text-align: center;
+	color: blue;
 }
 
 #modalRelease {
 	font-size: 14;
 	text-align: center;
+	color: blue;
 }
 
 #modalDevelopers {
 	font-size: 14;
 	text-align: center;
-}
-
-#modalDevelopers {
-	font-size: 14;
-	text-align: center;
+	color: blue;
 }
 
 modalPlatforms {
 	font-size: 14;
 	text-align: center;
+	color: blue;
 }
 
 modalSimilar {
 	font-size: 14;
 	text-align: center;
+	color: blue;
 }
