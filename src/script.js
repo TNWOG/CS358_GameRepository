@@ -524,7 +524,11 @@ function generateTmk(val){
 		clueSet.click()
 	}
 };
-
+function updateScroll()
+{
+	var element = document.getElementById("yourDivID");
+    element.scrollTop = element.scrollHeight;
+}
 function updateGuess()
 {
 	var numOfClues = clues.length
@@ -538,6 +542,7 @@ function updateGuess()
 			clues.splice(thisClueNum, 1)
 			console.log(clues)
 			clueArea.innerHTML += "<p id='clue" + thisClueNum + "'>You are " + answerPercent.toFixed(2)*100 + "% correct. \n" + thisClue +"</p>"
+			updateScroll();
 		}
 		else{
 			singleTitle.removeChild(clueSet)
