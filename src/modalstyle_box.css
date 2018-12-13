@@ -48,10 +48,13 @@
 	}
 
 #modalImage {
+	text-align: center;
+	align-content: center;
 }
 
 #modalName {
 	color: blue;
+	text-align: center;
 }
 
 #modalDesc {
@@ -78,14 +81,17 @@
 	color: blue;
 }
 
-modalPlatforms {
+#modalPlatforms {
 	font-size: 14;
 	text-align: center;
 	color: blue;
 }
 
-modalSimilar {
+#modalSimilar {
 	font-size: 14;
 	text-align: center;
 	color: blue;
+}
+#modalTableName {
+	column-count: 3;
 }
