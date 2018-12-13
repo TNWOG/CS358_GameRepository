@@ -5,11 +5,15 @@
     <title>GameDatabaseSearch</title>
     <link href="results_list_styles.css" rel="stylesheet" type="text/css">
     <link type="text/css" rel="stylesheet" href="modalstyle_box.css" />
+	  <link type="text/css" rel="stylesheet" href="testMyKnowledge.css"/>
 	<script src="JSONFetch.js"></script>
 	<script src="LoadingGraphics.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
+		<div id="tmk">
+			<button type = "button" id = "tmkOpen">Test My Knowledge!</button>
+		</div>
     <div id="input">
       <input type= "text" id= "gameTitleSearch" placeholder= "Search...">
       <button type = "button" id= "titleSubmit" class= "pointer">Search</button>
@@ -18,6 +22,18 @@
 	    <input type="radio" name="searchType" value="exclusive"> Exclusive<br>
 	  </form>
 	</div>
+	<div>
+		<input type="checkbox" id = "devCheck"/>Developer
+	</div>
+	<p>
+    		<label>Sort by</label>
+		<select id = "sortList">
+			<option value = "name:asc">A to Z</option>
+			<option value = "name:desc">Z to A</option>
+			<option value = "original_release_date:desc">Release Date: Newest to Oldest</option>
+			<option value = "original_release_date:asc">Release Date: Oldest to Newest</option>
+		</select>
+	</p>
 	
 	<p id = "emptySearchOutput"></p>
 
@@ -33,6 +49,7 @@
 	</div>
    
    	<div id="gameTitle"></div>
+	<div id="pageCount"></div>
     <script src="script.js"></script>
   </body>
 </html>
