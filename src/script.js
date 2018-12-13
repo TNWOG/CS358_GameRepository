@@ -342,8 +342,9 @@ window.onclick = function(event) {
     }
 };
 
-var tmkSel = document.createElement("select")
-var tmkBut = document.getElementById("tmkOpen")
+var tmkSel = document.createElement("select");
+var tmkBut = document.getElementById("tmkOpen");
+tmkSel.id="optionSelect";
 tmkBut.onclick = function(){
 	singleTitle.innerHTML = "";
 	modal.style.display = "block";
@@ -522,12 +523,12 @@ function updateGuess()
 			var thisClue = clues[thisClueNum]
 			clues.splice(thisClueNum, 1)
 			console.log(clues)
-			clueArea.innerHTML += "<p id='clue" + thisClueNum + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
+			clueArea.innerHTML += "<p id='clue"/* + thisClueNum + */"'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
 		}
 		else{
 			singleTitle.removeChild(clueSet)
 			singleTitle.removeChild(clueGuess)
-			clueArea.innerHTML += "<p id = 'answer'>The correct answer is " + gameName + "! You Lose!</p>"
+			clueArea.innerHTML += "<p id = 'wrongAnswer'>The correct answer is " + gameName + "! You Lose!</p>"
 			clueArea.innerHTML += "<p><img id='TYKimg' src=" + TYKimg + "></p>";
 		}
 	
@@ -536,7 +537,7 @@ function updateGuess()
 	{
 		singleTitle.removeChild(clueSet)
 		singleTitle.removeChild(clueGuess)
-		clueArea.innerHTML += "<p id = 'answer'>The answer is "+ gameName+"! You win!</p>"
+		clueArea.innerHTML += "<p id = 'rightAnswer'>The answer is "+ gameName+"! You win!</p>"
 		clueArea.innerHTML += "<p><img id='TYKimg' src=" + TYKimg + "></p>";
 	}
 }
