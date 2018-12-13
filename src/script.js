@@ -9,12 +9,16 @@ var image = document.getElementById("gameImage");
 var searchType = document.getElementsByName("searchType");
 var pageNum = document.getElementById("pageCount");
 
+var gameTest = "";
+
+var pageBool = false;
+
 var loadCirc = new LoadingGraphics()
 
 var singleTitle = document.getElementById("singleGameTitle");
 var arrayTitles = [];
 
-var globalStartNum = 0;
+var globalStartNum = -1;
 var globalEndNum = 0;
 
 var titleText = document.getElementById("gameTitleSearch");
@@ -26,6 +30,9 @@ titleText.addEventListener("keypress", function(e){
 		gameQuery();
 	}
 });
+
+var sortBy = document.getElementById("sortList");
+sortBy.addEventListener("change", function(){ if(title.innerHTML != "") { gameQuery(); }});
 
 //message displayed when no search found
 var noResults= "No results were found. Please try a different search.";
@@ -47,23 +54,35 @@ setInterval(function () {
     {
       request();
     }
+	  console.log(requests.length);
   }
   
 }, RATE_LIMIT_IN_MS);
 
 function gameQuery()
 {
+  pageBool = true;
+  globalStartNum = -1
   title.innerHTML = "";
   loadCirc.addTo("gameTitle");
   var devSearch = $('#devCheck:checkbox:checked').length > 0;
-  var GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
+  var GamesSearchUrl, searchUrl, sort
+  
+  sort = '&sort=' + sortBy.value;
+
+
   if (devSearch == 1) {
     GamesSearchUrl = baseUrl + '/companies/?api_key=' + apikey + '&format=jsonp';
   }
+  else{
+	GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
+  }
   query = titleText.value
-  var searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
   if (devSearch == 1) {
-    searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
+    searchUrl = GamesSearchUrl + '&filter=name:'+ query;
+  }
+  else{
+  	searchUrl = GamesSearchUrl + '&filter=name:'+ query;
   }
   var query = titleText.value;
   // send off the query
@@ -71,7 +90,7 @@ function gameQuery()
 	if(searchType[1].checked)
 	  {
 		$.ajax({
-		  url: GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query,
+		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
 		  type: "GET",
 		  dataType: "jsonp",
 		  crossDomain: true,
@@ -82,7 +101,7 @@ function gameQuery()
 	  else
 	  {
 		  $.ajax({
-		  url: GamesSearchUrl + '&sort=name:asc' + '&filter=name:'+ query,
+		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
 		  type: "GET",
 		  dataType: "jsonp",
 		  crossDomain: true,
@@ -105,12 +124,15 @@ function searchCallback(data)
 	{
 		//refers to a paragraph in the html with id="output"
 		document.getElementById("emptySearchOutput").innerHTML=noResults;
+		pageNum.innerHTML = "";
 	}
 	else
 	{
 		document.getElementById("emptySearchOutput").innerHTML="";
-		
-		Pages(data);
+		if(pageBool){
+			Pages(data);
+			pageBool = false;
+		}
 		
 		var test = 0;
 		data.results.forEach(function(e){
@@ -148,12 +170,16 @@ function exclusiveSearchCallback(data)
 	if(data.number_of_page_results === 0)
 	{
 		document.getElementById("emptySearchOutput").innerHTML= noResults;
+		pageNum.innerHTML = "";
 	}
 	else
 	{
 		document.getElementById("emptySearchOutput").innerHTML= "";
 		
-		Pages(data);
+		if(pageBool){
+			Pages(data);
+			pageBool = false;
+		}
 		
 		var test = 0;
 		data.results.forEach(function(e){
@@ -189,22 +215,26 @@ function exclusiveSearchCallback(data)
 }
 
 function Pages(gameCount){
-	var gameTest = gameCount;
+	gameTest = gameCount;
 	var everyTen = 10;
 	var counter = 1;
 	var counterString = "";
 	pageNum.innerHTML = "";
+	console.log(gameCount);
 	if(gameCount.results.length > 10){
 		for(var q = 0; q < gameCount.results.length; q++){
 			if(q%everyTen === 0){
-				pageNum.innerHTML += "<a id=" + counter + " onclick ='PageNumber(this.id)' class='pointer'>" + counter + " </a>";
+				pageNum.innerHTML += "<a id=" + counter + " onclick ='PageNumber(this.id, gameTest)' class='pointer'>" + counter + " </a>";
 				counter++;
 			}
 		}
 	}
+	if(globalStartNum === -1){
+		PageNumber(1, gameTest);
+	}
 }
 
-function PageNumber(myPage){
+function PageNumber(myPage, gameTest){
 	console.log(myPage);
 	
 	var resultStart = myPage;
@@ -225,8 +255,11 @@ function PageNumber(myPage){
 		globalStartNum = resultStart;
 		globalEndNum = resultsEnd;
 	}
-	
-	gameQuery();
+	if(searchType[1].checked){
+		exclusiveSearchCallback(gameTest);
+	} else{
+		searchCallback(gameTest);
+	}
 }
 
 function gameInfoQuery(id)
@@ -384,6 +417,7 @@ function generateTmk(val){
 			jsonp: "json_callback",
 			success: calculatePageNum
 			});
+
 	});
 	function calculatePageNum(data)
 	{
@@ -475,10 +509,12 @@ function generateTmk(val){
 		}
 		if(gameObjects){	
 			gameObjects.forEach(function(e){
-				clues.push("This game includes the object:" + e.name)
+				clues.push("This game includes the object: " + e.name)
 			})
 		}
+		if(gameDate){
 		clues.push("This game was released on: " + gameDate)
+		}
 		if(gameThemes){
 			gameThemes.forEach(function(e){
 				clues.push("This game has the theme: " + e.name)
@@ -504,7 +540,11 @@ function generateTmk(val){
 		clueSet.click()
 	}
 };
-
+function updateScroll()
+{
+	var element = document.getElementById("clueArea");
+    element.scrollTop = element.scrollHeight;
+}
 function updateGuess()
 {
 	var numOfClues = clues.length
@@ -517,7 +557,12 @@ function updateGuess()
 			var thisClue = clues[thisClueNum]
 			clues.splice(thisClueNum, 1)
 			console.log(clues)
+<<<<<<< HEAD
 			clueArea.innerHTML += "<p id='clue" + /* thisClueNum */ + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
+=======
+			clueArea.innerHTML += "<p id='clue" + thisClueNum + "'>You are " + answerPercent.toFixed(2)*100 + "% correct. \n" + thisClue +"</p>"
+			updateScroll();
+>>>>>>> origin/master
 		}
 		else{
 			singleTitle.removeChild(clueSet)
