@@ -27,6 +27,9 @@ titleText.addEventListener("keypress", function(e){
 	}
 });
 
+var sortBy = document.getElementById("sortList");
+sortBy.addEventListener("change", function(){ if(title.innerHTML != "") { gameQuery(); }});
+
 //message displayed when no search found
 var noResults= "No results were found. Please try a different search.";
 
@@ -58,7 +61,7 @@ function gameQuery()
   var devSearch = $('#devCheck:checkbox:checked').length > 0;
   var GamesSearchUrl, searchUrl, sort
   
-
+  sort = '&sort=' + sortBy.value;
 
 
   if (devSearch == 1) {
