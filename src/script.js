@@ -56,14 +56,19 @@ function gameQuery()
   title.innerHTML = "";
   loadCirc.addTo("gameTitle");
   var devSearch = $('#devCheck:checkbox:checked').length > 0;
-  var GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
+  var GamesSearchUrl, searchUrl
   if (devSearch == 1) {
     GamesSearchUrl = baseUrl + '/companies/?api_key=' + apikey + '&format=jsonp';
   }
+  else{
+	GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
+  }
   query = titleText.value
-  var searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
   if (devSearch == 1) {
     searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
+  }
+  else{
+  	searchUrl = GamesSearchUrl + '&filter=name:'+ query + '&sort=original_release_date:desc';
   }
   var query = titleText.value;
   // send off the query
@@ -480,10 +485,12 @@ function generateTmk(val){
 		}
 		if(gameObjects){	
 			gameObjects.forEach(function(e){
-				clues.push("This game includes the object:" + e.name)
+				clues.push("This game includes the object: " + e.name)
 			})
 		}
+		if(gameDate){
 		clues.push("This game was released on: " + gameDate)
+		}
 		if(gameThemes){
 			gameThemes.forEach(function(e){
 				clues.push("This game has the theme: " + e.name)
@@ -522,7 +529,7 @@ function updateGuess()
 			var thisClue = clues[thisClueNum]
 			clues.splice(thisClueNum, 1)
 			console.log(clues)
-			clueArea.innerHTML += "<p id='clue" + thisClueNum + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
+			clueArea.innerHTML += "<p id='clue" + thisClueNum + "'>You are " + answerPercent.toFixed(2)*100 + "% correct. \n" + thisClue +"</p>"
 		}
 		else{
 			singleTitle.removeChild(clueSet)
