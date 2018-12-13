@@ -9,6 +9,10 @@ var image = document.getElementById("gameImage");
 var searchType = document.getElementsByName("searchType");
 var pageNum = document.getElementById("pageCount");
 
+var gameTest = "";
+
+var pageBool = false;
+
 var loadCirc = new LoadingGraphics()
 
 var singleTitle = document.getElementById("singleGameTitle");
@@ -50,12 +54,15 @@ setInterval(function () {
     {
       request();
     }
+	  console.log(requests.length);
   }
   
 }, RATE_LIMIT_IN_MS);
 
 function gameQuery()
 {
+  pageBool = true;
+  globalStartNum = -1
   title.innerHTML = "";
   loadCirc.addTo("gameTitle");
   var devSearch = $('#devCheck:checkbox:checked').length > 0;
@@ -122,8 +129,10 @@ function searchCallback(data)
 	else
 	{
 		document.getElementById("emptySearchOutput").innerHTML="";
-		
-		Pages(data);
+		if(pageBool){
+			Pages(data);
+			pageBool = false;
+		}
 		
 		var test = 0;
 		data.results.forEach(function(e){
@@ -140,7 +149,7 @@ function searchCallback(data)
 			test += 1;
 			}
 		});
-		console.log(data)
+		
 		for(var i = globalStartNum - 1; i <= globalEndNum - 1; i++)
 		{
 			arrayTitles.push(data.results[i]);
@@ -167,7 +176,10 @@ function exclusiveSearchCallback(data)
 	{
 		document.getElementById("emptySearchOutput").innerHTML= "";
 		
-		Pages(data);
+		if(pageBool){
+			Pages(data);
+			pageBool = false;
+		}
 		
 		var test = 0;
 		data.results.forEach(function(e){
@@ -203,25 +215,26 @@ function exclusiveSearchCallback(data)
 }
 
 function Pages(gameCount){
-	var gameTest = gameCount;
+	gameTest = gameCount;
 	var everyTen = 10;
 	var counter = 1;
 	var counterString = "";
 	pageNum.innerHTML = "";
+	console.log(gameCount);
 	if(gameCount.results.length > 10){
 		for(var q = 0; q < gameCount.results.length; q++){
 			if(q%everyTen === 0){
-				pageNum.innerHTML += "<a id=" + counter + " onclick ='PageNumber(this.id)' class='pointer'>" + counter + " </a>";
+				pageNum.innerHTML += "<a id=" + counter + " onclick ='PageNumber(this.id, gameTest)' class='pointer'>" + counter + " </a>";
 				counter++;
 			}
 		}
 	}
 	if(globalStartNum === -1){
-		PageNumber(1);
+		PageNumber(1, gameTest);
 	}
 }
 
-function PageNumber(myPage){
+function PageNumber(myPage, gameTest){
 	console.log(myPage);
 	
 	var resultStart = myPage;
@@ -242,8 +255,11 @@ function PageNumber(myPage){
 		globalStartNum = resultStart;
 		globalEndNum = resultsEnd;
 	}
-	
-	gameQuery();
+	if(searchType[1].checked){
+		exclusiveSearchCallback(gameTest);
+	} else{
+		searchCallback(gameTest);
+	}
 }
 
 function gameInfoQuery(id)
@@ -405,6 +421,7 @@ function generateTmk(val){
 			jsonp: "json_callback",
 			success: calculatePageNum
 			});
+
 	});
 	function calculatePageNum(data)
 	{
