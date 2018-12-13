@@ -526,7 +526,7 @@ function generateTmk(val){
 };
 function updateScroll()
 {
-	var element = document.getElementById("yourDivID");
+	var element = document.getElementById("clueArea");
     element.scrollTop = element.scrollHeight;
 }
 function updateGuess()
