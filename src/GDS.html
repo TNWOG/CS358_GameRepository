@@ -14,18 +14,20 @@
 		<div id="tmk">
 			<button type = "button" id = "tmkOpen">Test My Knowledge!</button>
 		</div>
-    <div id="input">
-      <input type= "text" id= "gameTitleSearch" placeholder= "Search...">
-      <button type = "button" id= "titleSubmit" class= "pointer">Search</button>
-	  <form action="">
-		<input type="radio" name="searchType" value="inclusive" checked="true"> Inclusive<b> </b>
-	    <input type="radio" name="searchType" value="exclusive"> Exclusive<br>
-	  </form>
+	<div id="input">
+		<div id="searchBar">
+		 	<input type= "text" id= "gameTitleSearch" placeholder= "Search...">
+		  	<button type = "button" id= "titleSubmit" class= "pointer">Search</button>
+		</div>
+		<form action="">
+			<input type="radio" name="searchType" value="inclusive" checked="true"> Inclusive<b> </b>
+	    	<input type="radio" name="searchType" value="exclusive"> Exclusive<br>
+	  	</form>
 	</div>
-	<div>
+	<div id="developer">
 		<input type="checkbox" id = "devCheck"/>Developer
 	</div>
-	<p>
+	<p id="sorting">
     		<label>Sort by</label>
 		<select id = "sortList">
 			<option value = "name:asc">A to Z</option>

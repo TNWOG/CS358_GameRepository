@@ -35,3 +35,47 @@ th, td {
 	width: 25%;
 	padding: 2px;
 }
+
+#tmk {
+/*	text-align: center;*/
+}
+
+#input {
+/*	text-align: center;*/
+}
+
+#developer {
+/*	text-align: center;*/
+}
+
+#sorting {
+/*	text-align: center;*/
+}
+
+#platformFilter {
+/*	text-align: center;*/
+}
+
+#searchBar{
+	margin: 30px auto 10px auto;
+}
+
+#gameTitleSearch {
+	padding: 9px 15px;
+	background: rgba(185,182,182,1.00);
+	border: 0px solid #dbdbdb;
+}
+
+#titleSubmit {
+	position: relative;
+	padding: 7px 15px;
+	left: -8px;
+	border: 2px solid #207cca;
+	background-color: #207cca;
+	color: #fafafa;
+}
+
+#titleSubmit:hover {
+	background-color: #fafafa;
+	color: #207cca;
+}

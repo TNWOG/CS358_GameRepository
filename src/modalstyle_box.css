@@ -21,15 +21,21 @@
 	/* Modal Content */
 	.modal-content {
 		background-color: #fefefe;
+  		margin: 15% auto; /* 15% from the top and centered */
+  		padding: 20px;
+  		border: 1px solid #888;
+  		width: 80%;
+/*
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		float: left;
+*/
 		padding: 20px;
 		border: 1px solid #888;
-		width: 1400px;
-		height: 650px;
-		transform: translate(-50%, -57%);
+		width: 50%;
+/*		height: 650px;*/
+/*		transform: translate(-50%, -57%);*/
 	}
 
 	/* The Close Button */
@@ -53,7 +59,6 @@
 }
 
 #modalName {
-	color: blue;
 	text-align: center;
 }
 
@@ -92,6 +97,6 @@
 	text-align: center;
 	color: blue;
 }
-#modalTableName {
-	column-count: 3;
+#modalGameTable {
+	
 }
