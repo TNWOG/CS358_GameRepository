@@ -97,6 +97,11 @@
 	text-align: center;
 	color: blue;
 }
+
 #modalGameTable {
-	
+    width: -webkit-fill-available;
+}
+
+.modalHeader {
+	color: slategray;
 }
