@@ -304,28 +304,28 @@ function singleGameOutput(data)
 {
 	console.log(data);
 	var genreString = "";
-	if(data.results.genres !== null){
+	if(data.results.genres !== null && data.results.genres !== undefined){
 		for(var g = 0; g < data.results.genres.length; g++){
 			genreString += data.results.genres[g].name + "<br>";
 		}	
 	}
 	
 	var devString = "";
-	if(data.results.developers !== null){
+	if(data.results.developers !== null && data.results.developers !== undefined){
 		for(var d = 0; d < data.results.developers.length; d++){
 			devString += data.results.developers[d].name + "<br>";
 		}	
 	}
 	
 	var platformString = "";
-	if(data.results.platforms !== null){
+	if(data.results.platforms !== null && data.results.platforms !== undefined){
 		for(var p = 0; p < data.results.platforms.length; p++){
 			platformString += data.results.platforms[p].name + "<br>";
 		}	
 	}
 	
 	var similarString = "";
-	if(data.results.similar_games !== null){
+	if(data.results.similar_games !== null && data.results.similar_games !== undefined){
 		var min = Math.min(data.results.similar_games.length, 5)
 		for(var s = 0; s < min; s++){
 			similarString += data.results.similar_games[s].name + "<br>";
