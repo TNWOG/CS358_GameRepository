@@ -70,27 +70,20 @@ function gameQuery()
   
   sort = '&sort=' + sortBy.value;
 
-
   if (devSearch == 1) {
     GamesSearchUrl = baseUrl + '/companies/?api_key=' + apikey + '&format=jsonp';
   }
   else{
 	GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
   }
-  query = titleText.value
-  if (devSearch == 1) {
-    searchUrl = GamesSearchUrl + '&filter=name:'+ query;
-  }
-  else{
-  	searchUrl = GamesSearchUrl + '&filter=name:'+ query;
-  }
-  var query = titleText.value;
+  var query = titleText.value
+  searchUrl = GamesSearchUrl + '&filter=name:'+ query + sort;
   // send off the query
   requests.push(function() {
 	if(searchType[1].checked)
 	  {
 		$.ajax({
-		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
+		  url: searchUrl,
 		  type: "GET",
 		  dataType: "jsonp",
 		  crossDomain: true,
@@ -101,7 +94,7 @@ function gameQuery()
 	  else
 	  {
 		  $.ajax({
-		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
+		  url: searchUrl,
 		  type: "GET",
 		  dataType: "jsonp",
 		  crossDomain: true,
@@ -137,7 +130,7 @@ function searchCallback(data)
 		var test = 0;
 		data.results.forEach(function(e){
 			var platforms = "";
-			if(e.platforms !== null){
+			if(e.platforms !== null && e.platforms !== undefined){
 				for(var k = 0; k < e.platforms.length; k++){
 					if(k === e.platforms.length - 1){
 						platforms += e.platforms[k].name;
