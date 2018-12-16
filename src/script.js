@@ -34,6 +34,8 @@ titleText.addEventListener("keypress", function(e){
 var sortBy = document.getElementById("sortList");
 sortBy.addEventListener("change", function(){ if(title.innerHTML != "") { gameQuery(); }});
 
+var platformFilter = document.getElementsByName("platforms");
+
 //message displayed when no search found
 var noResults= "No results were found. Please try a different search.";
 
@@ -66,9 +68,21 @@ function gameQuery()
   title.innerHTML = "";
   loadCirc.addTo("gameTitle");
   var devSearch = $('#devCheck:checkbox:checked').length > 0;
-  var GamesSearchUrl, searchUrl, sort
+  var GamesSearchUrl, searchUrl, sort, platform
   
   sort = '&sort=' + sortBy.value;
+	
+  if(platforms[0].checked) {
+  	platform = ',' + platforms[0].value;
+  } else if (platforms[1].checked) {
+  	platform = ',' + platforms[1].value;
+  } else if (platforms[2].checked) {
+  	platform = ',' + platforms[2].value;
+  } else if (platforms[3].checked) {
+  	platform = ',' + platforms[3].value;
+  } else {
+	platform = "";
+  }
 
   if (devSearch == 1) {
     GamesSearchUrl = baseUrl + '/companies/?api_key=' + apikey + '&format=jsonp';
@@ -76,7 +90,7 @@ function gameQuery()
   else{
 	GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
   }
-  var query = titleText.value
+  var query = titleText.value + platform;
   searchUrl = GamesSearchUrl + '&filter=name:'+ query + sort;
   // send off the query
   requests.push(function() {
