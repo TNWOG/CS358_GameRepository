@@ -386,9 +386,9 @@ function singleGameOutput(data)
 	
 	singleTitle.innerHTML += 
 		"<table border='1' align='center' width ='100%' id='modalGameTable'><col width='200'><col width='200'><tr><th colspan='2'><h1 id ='modalName'>" + data.results.name + "</h1></th></tr>" + 
-		"<tr><th rowspan='5' align='center'><img id='modalImage' src=" + data.results.image.medium_url + ">" + "<tr><th id='modalGenres'><h3>Genre</h3>" + genreString + "</tr></th>" + "<tr><th id='modalRelease'>Release Date: " + data.results.original_release_date + "</th></tr>" + "<tr><th id='modalDevelopers'>Developer(s): " + devString + "</tr></th>" + "<tr><th id='modalPlatforms'>Platform(s): " + platformString + "</th></tr>" + 
-		"<tr><th colspan='2' id='modalDesc'>Description: " + data.results.deck + "</th></tr>" + 
-		"<tr><th colspan='2' id='modalSimilar'><h3>Similar Games:</h3>" + similarString + "</th></tr>" +
+		"<tr><th rowspan='5' align='center'><img id='modalImage' src=" + data.results.image.medium_url + ">" + "<tr><th id='modalGenres'><h2 class='modalHeader'>Genre</h2>" + genreString + "</tr></th>" + "<tr><th id='modalRelease'><h2 class='modalHeader'>Release Date</h2>" + data.results.original_release_date + "</th></tr>" + "<tr><th id='modalDevelopers'><h2 class='modalHeader'>Developer(s)</h2> " + devString + "</tr></th>" + "<tr><th id='modalPlatforms'><h2 class='modalHeader'>Platform(s)</h2> " + platformString + "</th></tr>" + 
+		"<tr><th colspan='2' id='modalDesc'><h2 class='modalHeader'>Description</h2> " + data.results.deck + "</th></tr>" + 
+		"<tr><th colspan='2' id='modalSimilar'><h2 class='modalHeader'>Similar Games</h2>" + similarString + "</th></tr>" +
 		"</table><br>";
 	modal.style.display = "block";
 }
