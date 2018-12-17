@@ -580,7 +580,7 @@ function updateGuess()
 			clues.splice(thisClueNum, 1)
 			console.log(clues)
 
-			clueArea.innerHTML += "<p id='clue" + /* thisClueNum */ + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
+			//clueArea.innerHTML += "<p id='clue" + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
 			clueArea.innerHTML += "<p id='clue" + thisClueNum + "'>You are " + answerPercent.toFixed(2)*100 + "% correct. \n" + thisClue +"</p>"
 			updateScroll();
 
