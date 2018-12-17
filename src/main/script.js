@@ -1,14 +1,15 @@
+//setting up request vars
 var apikey = "e59e045968715255af4842819fc2ec5536ba32fc";
 var baseUrl = "http://www.giantbomb.com/api";
 var RATE_LIMIT_IN_MS = 1000;
 var NUMBER_OF_REQUESTS_ALLOWED = 1;
 var NUMBER_OF_REQUESTS = 0;
-
+//document vars
 var title = document.getElementById("gameTitle");
 var image = document.getElementById("gameImage");
 var searchType = document.getElementsByName("searchType");
 var pageNum = document.getElementById("pageCount");
-
+//feature vars
 var gameTest = "";
 
 var pageBool = false;
@@ -48,6 +49,7 @@ $(window).bind("load", function() {
   fetcher.fileInput.setAttribute('onchange', 'fetcher.processJSON((e) => searchCallback(e))');
 });
 
+//processes requests once per second
 setInterval(function () {
   if(requests.length > 0)
   {
@@ -61,6 +63,7 @@ setInterval(function () {
   
 }, RATE_LIMIT_IN_MS);
 
+//search functionality
 function gameQuery()
 {
   pageBool = true;
@@ -69,10 +72,10 @@ function gameQuery()
   loadCirc.addTo("gameTitle");
   var devSearch = $('#devCheck:checkbox:checked').length > 0;
   var GamesSearchUrl, searchUrl, sort, platform
-  
+  //sort based on combo box
   sort = '&sort=' + sortBy.value;
-	
-    if(platformFilter[0].checked) {
+  //platform based on checkboxes
+  if(platformFilter[0].checked) {
   	platform = ',' + platformFilter[0].value;
   } else if (platformFilter[1].checked) {
   	platform = ',' + platformFilter[1].value;
@@ -85,20 +88,16 @@ function gameQuery()
   }	else {
 	platform = "";
   }
-
+  //changes search based on developer checkbox
   if (devSearch == 1) {
     GamesSearchUrl = baseUrl + '/companies/?api_key=' + apikey + '&format=jsonp';
   }
   else{
 	GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
   }
+  //gets query value
   query = titleText.value
-  if (devSearch == 1) {
-    searchUrl = GamesSearchUrl + '&filter=name:'+ query;
-  }
-  else{
-  	searchUrl = GamesSearchUrl + '&filter=name:'+ query;
-  }
+  searchUrl = GamesSearchUrl + '&filter=name:'+ query;
   var query = titleText.value + platform;
   // send off the query
   requests.push(function() {
@@ -126,7 +125,6 @@ function gameQuery()
 	  }
 	});
 }
-
 // callback for when we get back the results
 function searchCallback(data) 
 {
@@ -184,7 +182,7 @@ function searchCallback(data)
 		}
 	}
 }
-
+//callback if exclusive search is called
 function exclusiveSearchCallback(data)
 {
 	loadCirc.remove();
@@ -315,21 +313,6 @@ function gameInfoQuery(id)
   });
 }
 
-function similarGamesInfoQuery(id)
-{
-	var GamesSearchUrl = id + '/?api_key=' + apikey + '&format=jsonp';
-	requests.push(function() {
-		$.ajax({
-		  url: GamesSearchUrl,
-		  type: "GET",
-		  dataType: "jsonp",
-		  crossDomain: true,
-		  jsonp: "json_callback",
-		  success: singleGameOutput
-		});
-  });
-}
-
 function Checker(htmlData){
 	if(!($('#devCheck:checkbox:checked').length>0)){
 		var gameId;
@@ -350,7 +333,6 @@ function Checker(htmlData){
 
 function singleGameOutput(data)
 {
-	console.log(data);
 	var genreString = "";
 	if(data.results.genres !== null && data.results.genres !== undefined){
 		for(var g = 0; g < data.results.genres.length; g++){
@@ -504,7 +486,6 @@ function generateTmk(val){
 		singleTitle.innerHTML = "";
 		console.log(data)
 		gameName = data.results.name
-		var gameDescription = data.results.deck
 		var gameDev = data.results.developers
 		var gameConcepts = data.results.concepts
 		var gameCharacters = data.results.characters
