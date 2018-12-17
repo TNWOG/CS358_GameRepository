@@ -303,7 +303,6 @@ function PageNumber(myPage, gameTest){
 function gameInfoQuery(id)
 {
 	var GamesSearchUrl = baseUrl + '/game/' + id + '/?api_key=' + apikey + '&format=jsonp';
-	console.log(GamesSearchUrl)
 	requests.push(function() {
 		$.ajax({
 		  url: GamesSearchUrl,
@@ -601,7 +600,7 @@ function updateGuess()
 			clues.splice(thisClueNum, 1)
 			console.log(clues)
 
-			clueArea.innerHTML += "<p id='clue" + /* thisClueNum */ + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
+			//clueArea.innerHTML += "<p id='clue" + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
 			clueArea.innerHTML += "<p id='clue" + thisClueNum + "'>You are " + answerPercent.toFixed(2)*100 + "% correct. \n" + thisClue +"</p>"
 			updateScroll();
 

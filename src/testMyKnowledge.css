@@ -2,7 +2,7 @@
 /* CSS Document */
 
 #optionSelect{
-	
+	margin-left: 30%;
 }
 #guessButton{
 	text-align: center;
@@ -10,9 +10,7 @@
 }
 
 #clueGuess{
-	/*want to center in modal box*/
-	text-align: center;
-	display: 
+	margin-left: 30%;
 }
 
 #clueArea{
