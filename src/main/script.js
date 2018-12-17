@@ -102,8 +102,6 @@ function gameQuery()
   var query = titleText.value + platform;
   // send off the query
   requests.push(function() {
-	if(searchType[1].checked)
-	  {
 		$.ajax({
 		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
 		  type: "GET",
@@ -112,18 +110,6 @@ function gameQuery()
 		  jsonp: "json_callback",
 		  success: Pages	
 		});
-	  }
-	  else
-	  {
-		  $.ajax({
-		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
-		  type: "GET",
-		  dataType: "jsonp",
-		  crossDomain: true,
-		  jsonp: "json_callback",
-		  success: Pages	
-		});
-	  }
 	});
 }
 
