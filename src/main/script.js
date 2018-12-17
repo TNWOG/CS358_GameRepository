@@ -101,8 +101,6 @@ function gameQuery()
   var query = titleText.value + platform;
   // send off the query
   requests.push(function() {
-	if(searchType[1].checked)
-	  {
 		$.ajax({
 		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
 		  type: "GET",
@@ -111,18 +109,6 @@ function gameQuery()
 		  jsonp: "json_callback",
 		  success: Pages	
 		});
-	  }
-	  else
-	  {
-		  $.ajax({
-		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
-		  type: "GET",
-		  dataType: "jsonp",
-		  crossDomain: true,
-		  jsonp: "json_callback",
-		  success: Pages	
-		});
-	  }
 	});
 }
 // callback for when we get back the results
@@ -319,13 +305,17 @@ function Checker(htmlData){
 		for(var j = 0; j < arrayTitles.length; j++){
 			console.log(arrayTitles[j].id.toString())
 			if(arrayTitles[j].id.toString() === htmlData.id){
-				gameId = arrayTitles[j].guid;
+				if(arrayTitles[j].guid == undefined){
+					gameId = "3030-" + arrayTitles[j].id;
+				}else{
+					gameId = arrayTitles[j].guid;
+				}
 				break;
 			}
 		}
 		singleTitle.innerHTML = "";
 		modal.style.display = "block";
-		loadCirc.addTo("singleGameTitle");
+		loadCirc.addTo("singleGameTitle", true);
 		console.log(gameId)
 		gameInfoQuery(gameId);
 	}
@@ -358,7 +348,8 @@ function singleGameOutput(data)
 	if(data.results.similar_games !== null && data.results.similar_games !== undefined){
 		var min = Math.min(data.results.similar_games.length, 5)
 		for(var s = 0; s < min; s++){
-			similarString += data.results.similar_games[s].name + "<br>";
+			arrayTitles.push(data.results.similar_games[s]);
+			similarString += "<a id='" + data.results.similar_games[s].id + "' onclick='Checker(this)' class='pointer' style='text-align: center !important; color: blue !important;'>" + data.results.similar_games[s].name + "</a><br>";
 		}	
 	} else{
 		similarString = "None";
@@ -368,9 +359,9 @@ function singleGameOutput(data)
 	
 	singleTitle.innerHTML += 
 		"<table border='1' align='center' width ='100%' id='modalGameTable'><col width='200'><col width='200'><tr><th colspan='2'><h1 id ='modalName'>" + data.results.name + "</h1></th></tr>" + 
-		"<tr><th rowspan='5' align='center'><img id='modalImage' src=" + data.results.image.medium_url + ">" + "<tr><th id='modalGenres'><h3>Genre</h3>" + genreString + "</tr></th>" + "<tr><th id='modalRelease'>Release Date: " + data.results.original_release_date + "</th></tr>" + "<tr><th id='modalDevelopers'>Developer(s): " + devString + "</tr></th>" + "<tr><th id='modalPlatforms'>Platform(s): " + platformString + "</th></tr>" + 
-		"<tr><th colspan='2' id='modalDesc'>Description: " + data.results.deck + "</th></tr>" + 
-		"<tr><th colspan='2' id='modalSimilar'><h3>Similar Games:</h3>" + similarString + "</th></tr>" +
+		"<tr><th rowspan='5' align='center'><img id='modalImage' src=" + data.results.image.medium_url + ">" + "<tr><th id='modalGenres'><h2 class='modalHeader'>Genre</h2>" + genreString + "</tr></th>" + "<tr><th id='modalRelease'><h2 class='modalHeader'>Release Date</h2>" + data.results.original_release_date + "</th></tr>" + "<tr><th id='modalDevelopers'><h2 class='modalHeader'>Developer(s)</h2> " + devString + "</tr></th>" + "<tr><th id='modalPlatforms'><h2 class='modalHeader'>Platform(s)</h2> " + platformString + "</th></tr>" + 
+		"<tr><th colspan='2' id='modalDesc'><h2 class='modalHeader'>Description</h2> " + data.results.deck + "</th></tr>" + 
+		"<tr><th colspan='2' id='modalSimilar'><h2 class='modalHeader'>Similar Games</h2>" + similarString + "</th></tr>" +
 		"</table><br>";
 	modal.style.display = "block";
 }
@@ -396,6 +387,7 @@ window.onclick = function(event) {
 var tmkSel = document.createElement("select");
 var tmkBut = document.getElementById("tmkOpen");
 tmkSel.id="optionSelect";
+//add initial TMK HTML elements
 tmkBut.onclick = function(){
 	singleTitle.innerHTML = "";
 	modal.style.display = "block";
@@ -425,7 +417,7 @@ tmkBut.onclick = function(){
 
 var clues = [];
 var gameName, clueArea, clueGuess, TYKimg;
-
+//generate TMK games, clues, and element
 function generateTmk(val){
   singleTitle.innerHTML = "";
   tmkSel.innerHTML = ""
@@ -443,6 +435,7 @@ function generateTmk(val){
 			});
 
 	});
+	//use first query to pick a random page number
 	function calculatePageNum(data)
 	{
 		console.log(data)
@@ -460,6 +453,7 @@ function generateTmk(val){
 			});
 		});
 	}
+	//use second query to pick a random game
 	function generateGame(data)
 	{
 		console.log(data)
@@ -479,12 +473,13 @@ function generateTmk(val){
 			});
 		});
 	}
-
+	//use third query to get info about game to generate clues
 	function setupGame(data)
 	{
 		loadCirc.remove()
 		singleTitle.innerHTML = "";
 		console.log(data)
+		//generate clues from JSON file
 		gameName = data.results.name
 		var gameDev = data.results.developers
 		var gameConcepts = data.results.concepts
@@ -548,6 +543,7 @@ function generateTmk(val){
 				clues.push("This game was published by: " + e.name)
 			})
 		}
+		//generate game elements
 		clueArea = document.createElement("div")
 		clueArea.id = "clueArea"
 		singleTitle.appendChild(clueArea)
@@ -563,11 +559,13 @@ function generateTmk(val){
 		clueSet.click()
 	}
 };
+//update scrollbar
 function updateScroll()
 {
 	var element = document.getElementById("clueArea");
     element.scrollTop = element.scrollHeight;
 }
+//process guesses and add clues
 function updateGuess()
 {
 	var numOfClues = clues.length
@@ -602,7 +600,7 @@ function updateGuess()
 		clueArea.innerHTML += "<p><img id='TYKimg' src=" + TYKimg + "></p>";
 	}
 }
-
+//similarity and editdistance finds a percentage difference between two strings
 function similarity(s1, s2) {
 	var longer = s1;
 	var shorter = s2;
