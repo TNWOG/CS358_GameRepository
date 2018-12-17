@@ -72,14 +72,14 @@ function gameQuery()
   
   sort = '&sort=' + sortBy.value;
 	
-  if(platforms[0].checked) {
-  	platform = ',' + platforms[0].value;
-  } else if (platforms[1].checked) {
-  	platform = ',' + platforms[1].value;
-  } else if (platforms[2].checked) {
-  	platform = ',' + platforms[2].value;
-  } else if (platforms[3].checked) {
-  	platform = ',' + platforms[3].value;
+    if(platformFilter[0].checked) {
+  	platform = ',' + platformFilter[0].value;
+  } else if (platformFilter[1].checked) {
+  	platform = ',' + platformFilter[1].value;
+  } else if (platformFilter[2].checked) {
+  	platform = ',' + platformFilter[2].value;
+  } else if (platformFilter[3].checked) {
+  	platform = ',' + platformFilter[3].value;
   } else {
 	platform = "";
   }
@@ -90,30 +90,36 @@ function gameQuery()
   else{
 	GamesSearchUrl = baseUrl + '/games/?api_key=' + apikey + '&format=jsonp';
   }
+  query = titleText.value
+  if (devSearch == 1) {
+    searchUrl = GamesSearchUrl + '&filter=name:'+ query;
+  }
+  else{
+  	searchUrl = GamesSearchUrl + '&filter=name:'+ query;
+  }
   var query = titleText.value + platform;
-  searchUrl = GamesSearchUrl + '&filter=name:'+ query + sort;
   // send off the query
   requests.push(function() {
 	if(searchType[1].checked)
 	  {
 		$.ajax({
-		  url: searchUrl,
+		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
 		  type: "GET",
 		  dataType: "jsonp",
 		  crossDomain: true,
 		  jsonp: "json_callback",
-		  success: exclusiveSearchCallback	
+		  success: Pages	
 		});
 	  }
 	  else
 	  {
 		  $.ajax({
-		  url: searchUrl,
+		  url: GamesSearchUrl + '&filter=name:'+ query + sort,
 		  type: "GET",
 		  dataType: "jsonp",
 		  crossDomain: true,
 		  jsonp: "json_callback",
-		  success: searchCallback	
+		  success: Pages	
 		});
 	  }
 	});
@@ -144,7 +150,7 @@ function searchCallback(data)
 		var test = 0;
 		data.results.forEach(function(e){
 			var platforms = "";
-			if(e.platforms !== null && e.platforms !== undefined){
+			if(e.platforms !== null){
 				for(var k = 0; k < e.platforms.length; k++){
 					if(k === e.platforms.length - 1){
 						platforms += e.platforms[k].name;
@@ -310,7 +316,7 @@ function Checker(htmlData){
 	}
 	singleTitle.innerHTML = "";
 	modal.style.display = "block";
-	loadCirc.addTo("singleGameTitle", true);
+	loadCirc.addTo("singleGameTitle");
 	gameInfoQuery(gameId);
 }
 
@@ -352,9 +358,9 @@ function singleGameOutput(data)
 	
 	singleTitle.innerHTML += 
 		"<table border='1' align='center' width ='100%' id='modalGameTable'><col width='200'><col width='200'><tr><th colspan='2'><h1 id ='modalName'>" + data.results.name + "</h1></th></tr>" + 
-		"<tr><th rowspan='5' align='center'><img id='modalImage' src=" + data.results.image.medium_url + ">" + "<tr><th id='modalGenres'><h2 class='modalHeader'>Genre</h2>" + genreString + "</tr></th>" + "<tr><th id='modalRelease'><h2 class='modalHeader'>Release Date</h2>" + data.results.original_release_date + "</th></tr>" + "<tr><th id='modalDevelopers'><h2 class='modalHeader'>Developer</h2>" + devString + "</tr></th>" + "<tr><th id='modalPlatforms'><h2 class='modalHeader'>Platforms</h2>" + platformString + "</th></tr>" + 
-		"<tr><th colspan='2' id='modalDesc'><h2 class='modalHeader'>Description</h2>" + data.results.deck + "</th></tr>" + 
-		"<tr><th colspan='2' id='modalSimilar'><h2 class='modalHeader'>Similar Games</h2>" + similarString + "</th></tr>" +
+		"<tr><th rowspan='5' align='center'><img id='modalImage' src=" + data.results.image.medium_url + ">" + "<tr><th id='modalGenres'><h3>Genre</h3>" + genreString + "</tr></th>" + "<tr><th id='modalRelease'>Release Date: " + data.results.original_release_date + "</th></tr>" + "<tr><th id='modalDevelopers'>Developer(s): " + devString + "</tr></th>" + "<tr><th id='modalPlatforms'>Platform(s): " + platformString + "</th></tr>" + 
+		"<tr><th colspan='2' id='modalDesc'>Description: " + data.results.deck + "</th></tr>" + 
+		"<tr><th colspan='2' id='modalSimilar'><h3>Similar Games:</h3>" + similarString + "</th></tr>" +
 		"</table><br>";
 	modal.style.display = "block";
 }
