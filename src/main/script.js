@@ -34,6 +34,8 @@ titleText.addEventListener("keypress", function(e){
 var sortBy = document.getElementById("sortList");
 sortBy.addEventListener("change", function(){ if(title.innerHTML != "") { gameQuery(); }});
 
+var platformFilter = document.getElementsByName("platforms");
+
 //message displayed when no search found
 var noResults= "No results were found. Please try a different search.";
 
@@ -66,10 +68,23 @@ function gameQuery()
   title.innerHTML = "";
   loadCirc.addTo("gameTitle");
   var devSearch = $('#devCheck:checkbox:checked').length > 0;
-  var GamesSearchUrl, searchUrl, sort
+  var GamesSearchUrl, searchUrl, sort, platform
   
   sort = '&sort=' + sortBy.value;
-
+	
+    if(platformFilter[0].checked) {
+  	platform = ',' + platformFilter[0].value;
+  } else if (platformFilter[1].checked) {
+  	platform = ',' + platformFilter[1].value;
+  } else if (platformFilter[2].checked) {
+  	platform = ',' + platformFilter[2].value;
+  } else if (platformFilter[3].checked) {
+  	platform = ',' + platformFilter[3].value;
+  } else if (platformFilter[4].checked) {
+	platform = ',' + platformFilter[4].value;
+  }	else {
+	platform = "";
+  }
 
   if (devSearch == 1) {
     GamesSearchUrl = baseUrl + '/companies/?api_key=' + apikey + '&format=jsonp';
@@ -84,7 +99,7 @@ function gameQuery()
   else{
   	searchUrl = GamesSearchUrl + '&filter=name:'+ query;
   }
-  var query = titleText.value;
+  var query = titleText.value + platform;
   // send off the query
   requests.push(function() {
 	if(searchType[1].checked)
@@ -95,7 +110,7 @@ function gameQuery()
 		  dataType: "jsonp",
 		  crossDomain: true,
 		  jsonp: "json_callback",
-		  success: exclusiveSearchCallback	
+		  success: Pages	
 		});
 	  }
 	  else
@@ -106,7 +121,7 @@ function gameQuery()
 		  dataType: "jsonp",
 		  crossDomain: true,
 		  jsonp: "json_callback",
-		  success: searchCallback	
+		  success: Pages	
 		});
 	  }
 	});
@@ -119,6 +134,7 @@ function searchCallback(data)
 	arrayTitles = [];
 	var platforms = "";
 	var platformsArray = [];
+	var devSearch = $('#devCheck:checkbox:checked').length > 0;
 	title.innerHTML = "";
 	if(data.number_of_page_results === 0)
 	{
@@ -137,7 +153,7 @@ function searchCallback(data)
 		var test = 0;
 		data.results.forEach(function(e){
 			var platforms = "";
-			if(e.platforms !== null){
+			if(e.platforms){
 				for(var k = 0; k < e.platforms.length; k++){
 					if(k === e.platforms.length - 1){
 						platforms += e.platforms[k].name;
@@ -153,7 +169,18 @@ function searchCallback(data)
 		for(var i = globalStartNum - 1; i <= globalEndNum - 1; i++)
 		{
 			arrayTitles.push(data.results[i]);
-			title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id = " + data.results[i].id + " onclick='Checker(this)' class='pointer' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
+			if(data.results[i] !== undefined && data.results[i] !== null){
+				if(devSearch)
+				{
+					title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id = " + data.results[i].id + " onclick='Checker(this)' class='pointer' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr>"
+				}
+				else{
+					title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id = " + data.results[i].id + " onclick='Checker(this)' class='pointer' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
+				}
+			}
+			else{
+				break;
+			}
 		}
 	}
 }
@@ -164,6 +191,7 @@ function exclusiveSearchCallback(data)
 	arrayTitles = [];
 	var platforms = "";
 	var platformsArray = [];
+	var devSearch = $('#devCheck:checkbox:checked').length > 0;
 	title.innerHTML = "";
 	var query= titleText.value;
 	var count=0;
@@ -184,7 +212,7 @@ function exclusiveSearchCallback(data)
 		var test = 0;
 		data.results.forEach(function(e){
 			platforms = "";
-			if(e.platforms !== null){
+			if(e.platforms){
 				for(var k = 0; k < e.platforms.length; k++){
 					if(k === e.platforms.length - 1){
 						platforms += e.platforms[k].name;
@@ -198,13 +226,23 @@ function exclusiveSearchCallback(data)
 		});
 		
 		for(var i = globalStartNum - 1; i < globalEndNum - 1; i++)
-		{				
-			if(data.results[i].name.toLocaleUpperCase().includes(query.toLocaleUpperCase() + " ",0) || 			 	data.results[i].name.toLocaleUpperCase() === query.toLocaleUpperCase()) 
-			{
-				arrayTitles.push(data.results[i]);
-				title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id ='image' onclick='Checker(this)' class='pointer' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
-						
-				count++;
+		{		
+			if(data.results[i] !== undefined && data.results[i] !== null){
+				if(data.results[i].name.toLocaleUpperCase().includes(query.toLocaleUpperCase() + " ",0) || 			 	data.results[i].name.toLocaleUpperCase() === query.toLocaleUpperCase()) 
+				{
+					arrayTitles.push(data.results[i]);
+					if(devSearch)
+					{
+						title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id = " + data.results[i].id + " onclick='Checker(this)' class='pointer' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr>"
+					}
+					else{
+						title.innerHTML += "<table><tr><th id='thumbnail' rowspan='5'><img id = " + data.results[i].id + " onclick='Checker(this)' class='pointer' src=" + data.results[i].image.medium_url + "></th><th colspan='2'><a id ='" + data.results[i].id + "' onclick='Checker(this)' class='pointer'>" + data.results[i].name + "</a></th></tr><tr><td>Release Date: "+ data.results[i].original_release_date + "</td></tr><tr><td>Platform(s): " + platformsArray[i] + "</tr></td></table><br>";
+					}
+					count++;
+				}
+			} 
+			else{
+				break;
 			}
 		}
 		if(count === 0)
@@ -293,48 +331,51 @@ function similarGamesInfoQuery(id)
 }
 
 function Checker(htmlData){
-	console.log(htmlData);
-	var gameId;
-	for(var j = 0; j < arrayTitles.length; j++){
-		if(arrayTitles[j].id.toString() === htmlData.id){
-			gameId = arrayTitles[j].guid;
-			break;
+	if(!($('#devCheck:checkbox:checked').length>0)){
+		var gameId;
+		for(var j = 0; j < arrayTitles.length; j++){
+			console.log(arrayTitles[j].id.toString())
+			if(arrayTitles[j].id.toString() === htmlData.id){
+				gameId = arrayTitles[j].guid;
+				break;
+			}
 		}
+		singleTitle.innerHTML = "";
+		modal.style.display = "block";
+		loadCirc.addTo("singleGameTitle");
+		console.log(gameId)
+		gameInfoQuery(gameId);
 	}
-	singleTitle.innerHTML = "";
-	modal.style.display = "block";
-	loadCirc.addTo("singleGameTitle");
-	gameInfoQuery(gameId);
 }
 
 function singleGameOutput(data)
 {
 	console.log(data);
 	var genreString = "";
-	if(data.results.genres !== null){
+	if(data.results.genres !== null && data.results.genres !== undefined){
 		for(var g = 0; g < data.results.genres.length; g++){
 			genreString += data.results.genres[g].name + "<br>";
 		}	
 	}
 	
 	var devString = "";
-	if(data.results.developers !== null){
+	if(data.results.developers !== null && data.results.developers !== undefined){
 		for(var d = 0; d < data.results.developers.length; d++){
 			devString += data.results.developers[d].name + "<br>";
 		}	
 	}
 	
 	var platformString = "";
-	if(data.results.platforms !== null){
+	if(data.results.platforms !== null && data.results.platforms !== undefined){
 		for(var p = 0; p < data.results.platforms.length; p++){
 			platformString += data.results.platforms[p].name + "<br>";
 		}	
 	}
 	
 	var similarString = "";
-	console.log(data.results.similar_games);
-	if(data.results.similar_games !== null){
-		for(var s = 0; s < 5; s++){
+	if(data.results.similar_games !== null && data.results.similar_games !== undefined){
+		var min = Math.min(data.results.similar_games.length, 5)
+		for(var s = 0; s < min; s++){
 			similarString += data.results.similar_games[s].name + "<br>";
 		}	
 	} else{
@@ -345,9 +386,9 @@ function singleGameOutput(data)
 	
 	singleTitle.innerHTML += 
 		"<table border='1' align='center' width ='100%' id='modalGameTable'><col width='200'><col width='200'><tr><th colspan='2'><h1 id ='modalName'>" + data.results.name + "</h1></th></tr>" + 
-		"<tr><th rowspan='5' align='center'><img id='modalImage' src=" + data.results.image.medium_url + ">" + "<tr><th id='modalGenres'><h3>Genre</h3>" + genreString + "</tr></th>" + "<tr><th id='modalRelease'>" + data.results.original_release_date + "</th></tr>" + "<tr><th id='modalDevelopers'>" + devString + "</tr></th>" + "<tr><th id='modalPlatforms'>" + platformString + "</th></tr>" + 
-		"<tr><th colspan='2' id='modalDesc'>" + data.results.deck + "</th></tr>" + 
-		"<tr><th colspan='2' id='modalSimilar'>" + similarString + "</th></tr>" +
+		"<tr><th rowspan='5' align='center'><img id='modalImage' src=" + data.results.image.medium_url + ">" + "<tr><th id='modalGenres'><h3>Genre</h3>" + genreString + "</tr></th>" + "<tr><th id='modalRelease'>Release Date: " + data.results.original_release_date + "</th></tr>" + "<tr><th id='modalDevelopers'>Developer(s): " + devString + "</tr></th>" + "<tr><th id='modalPlatforms'>Platform(s): " + platformString + "</th></tr>" + 
+		"<tr><th colspan='2' id='modalDesc'>Description: " + data.results.deck + "</th></tr>" + 
+		"<tr><th colspan='2' id='modalSimilar'><h3>Similar Games:</h3>" + similarString + "</th></tr>" +
 		"</table><br>";
 	modal.style.display = "block";
 }
@@ -559,7 +600,7 @@ function updateGuess()
 			clues.splice(thisClueNum, 1)
 			console.log(clues)
 
-			clueArea.innerHTML += "<p id='clue" + /* thisClueNum */ + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
+			//clueArea.innerHTML += "<p id='clue" + "'>You are " + answerPercent + "% correct. \n" + thisClue +"</p>"
 			clueArea.innerHTML += "<p id='clue" + thisClueNum + "'>You are " + answerPercent.toFixed(2)*100 + "% correct. \n" + thisClue +"</p>"
 			updateScroll();
 
@@ -595,29 +636,29 @@ function similarity(s1, s2) {
 	return (longerLength - editDistance(longer, shorter)) / parseFloat(longerLength);
   }
 
-  function editDistance(s1, s2) {
-	s1 = s1.toLowerCase();
-	s2 = s2.toLowerCase();
-  
-	var costs = new Array();
-	for (var i = 0; i <= s1.length; i++) {
-	  var lastValue = i;
-	  for (var j = 0; j <= s2.length; j++) {
-		if (i == 0)
-		  costs[j] = j;
-		else {
-		  if (j > 0) {
-			var newValue = costs[j - 1];
-			if (s1.charAt(i - 1) != s2.charAt(j - 1))
-			  newValue = Math.min(Math.min(newValue, lastValue),
-				costs[j]) + 1;
-			costs[j - 1] = lastValue;
-			lastValue = newValue;
-		  }
+function editDistance(s1, s2) {
+s1 = s1.toLowerCase();
+s2 = s2.toLowerCase();
+
+var costs = new Array();
+for (var i = 0; i <= s1.length; i++) {
+	var lastValue = i;
+	for (var j = 0; j <= s2.length; j++) {
+	if (i == 0)
+		costs[j] = j;
+	else {
+		if (j > 0) {
+		var newValue = costs[j - 1];
+		if (s1.charAt(i - 1) != s2.charAt(j - 1))
+			newValue = Math.min(Math.min(newValue, lastValue),
+			costs[j]) + 1;
+		costs[j - 1] = lastValue;
+		lastValue = newValue;
 		}
-	  }
-	  if (i > 0)
-		costs[s2.length] = lastValue;
 	}
-	return costs[s2.length];
-  }
+	}
+	if (i > 0)
+	costs[s2.length] = lastValue;
+}
+return costs[s2.length];
+}
