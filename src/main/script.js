@@ -336,7 +336,11 @@ function Checker(htmlData){
 		for(var j = 0; j < arrayTitles.length; j++){
 			console.log(arrayTitles[j].id.toString())
 			if(arrayTitles[j].id.toString() === htmlData.id){
-				gameId = arrayTitles[j].guid;
+				if(arrayTitles[j].guid == undefined){
+					gameId = "3030-" + arrayTitles[j].id;
+				}else{
+					gameId = arrayTitles[j].guid;
+				}
 				break;
 			}
 		}
@@ -376,7 +380,8 @@ function singleGameOutput(data)
 	if(data.results.similar_games !== null && data.results.similar_games !== undefined){
 		var min = Math.min(data.results.similar_games.length, 5)
 		for(var s = 0; s < min; s++){
-			similarString += data.results.similar_games[s].name + "<br>";
+			arrayTitles.push(data.results.similar_games[s]);
+			similarString += "<a id='" + data.results.similar_games[s].id + "' onclick='Checker(this)' class='pointer' style='text-align: center !important; color: blue !important;'>" + data.results.similar_games[s].name + "</a><br>";
 		}	
 	} else{
 		similarString = "None";
